@@ -1,0 +1,54 @@
+$defaultFontFamily: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$defaultFontSize: 14px;
+$smallFontSize: 12px;
+$largeFontSize: 18px;
+$titleFontSize: 24px;
+$defaultLineHeight: 1.45;
+$defaultTextWeight: 500;
+$mediumTextWeight: 600;
+$boldTextWeight: 700;
+
+$defaultTextColor: #0f172a;
+$secondaryTextColor: #334155;
+$subtextColor: #64748b;
+$placeholderColor: #94a3b8;
+$inverseTextColor: #ffffff;
+
+$defaultBackgroundColor: #f1f5f9;
+$surfaceColor: #ffffff;
+$surfaceMutedColor: #f8fafc;
+$hoverBackgroundColor: #f1f5f9;
+
+$defaultBorderColor: #e2e8f0;
+$strongBorderColor: #cbd5e1;
+
+$primaryColor: #2563eb;
+$primaryHoverColor: #1d4ed8;
+$primarySoftColor: #eff6ff;
+$primaryBorderColor: #bfdbfe;
+$primaryFocusColor: rgba(37, 99, 235, 0.2);
+
+$dangerColor: #ef4444;
+$dangerDarkColor: #b91c1c;
+$dangerSoftColor: #fef2f2;
+$dangerBorderColor: #fecaca;
+$successColor: #166534;
+$successSoftColor: #dcfce7;
+$warningColor: #854d0e;
+$warningSoftColor: #fefce8;
+$warningBorderColor: #fef08a;
+
+$radiusSmall: 4px;
+$defaultRadius: 6px;
+$radiusMedium: 8px;
+$radiusLarge: 12px;
+$radiusRound: 9999px;
+$defaultShadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+$elevatedShadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+$overlayColor: rgba(15, 23, 42, 0.45);
+$spacingXs: 4px;
+$spacingSm: 8px;
+$spacingMd: 12px;
+$spacingLg: 16px;
+$spacingXl: 24px;
+$defaultTransition: 0.15s ease;

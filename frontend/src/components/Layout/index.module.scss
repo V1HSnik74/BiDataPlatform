@@ -1,0 +1,75 @@
+@use '../../styles/vars' as *;
+
+$headerHeight: 60px;
+
+.globalHeader {
+  height: $headerHeight;
+  background-color: $surfaceColor;
+  border-bottom: 1px solid $defaultBorderColor;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacingLg;
+  padding: 0 $spacingXl;
+
+  .headerLeft {
+    display: flex;
+    align-items: center;
+    gap: $spacingXl;
+    height: 100%;
+    min-width: 0;
+
+    .brandTitle {
+      font-size: $largeFontSize;
+      font-weight: $boldTextWeight;
+      letter-spacing: -0.015em;
+      white-space: nowrap;
+    }
+
+    .navMenu {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      overflow-x: auto;
+
+      .navItem {
+        position: relative;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 $spacingLg;
+        color: $subtextColor;
+        text-decoration: none;
+        white-space: nowrap;
+        transition:
+          color $defaultTransition,
+          background-color $defaultTransition;
+
+        &:hover {
+          color: $defaultTextColor;
+        }
+
+        &:focus-visible {
+          outline: 2px solid $primaryColor;
+          outline-offset: -2px;
+        }
+
+        &.navItemActive {
+          color: $defaultTextColor;
+          background-color: $hoverBackgroundColor;
+          font-weight: $mediumTextWeight;
+
+          &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: $defaultTextColor;
+          }
+        }
+      }
+    }
+  }
+}

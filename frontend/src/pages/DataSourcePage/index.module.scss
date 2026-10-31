@@ -1,0 +1,277 @@
+@use '../../styles/vars' as *;
+
+$headerHeight: 60px;
+
+$fileXlsxColor: #107c41;
+$fileJsonColor: #f59e0b;
+$fileXmlColor: #0284c7;
+
+.container {
+  min-height: calc(100vh - #{$headerHeight});
+}
+
+.main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: $spacingXl $spacingXl 64px;
+
+  .pageTitle {
+    margin: 0 0 $spacingXl;
+    font-size: $titleFontSize;
+    font-weight: $boldTextWeight;
+    color: $defaultTextColor;
+    letter-spacing: -0.02em;
+  }
+}
+
+.card {
+  padding: $spacingXl;
+  background: $surfaceColor;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $radiusLarge;
+  box-shadow: $defaultShadow;
+}
+
+.dropZone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $spacingXl;
+  padding: 40px $spacingXl;
+  background-color: $surfaceMutedColor;
+  border: 2px dashed $strongBorderColor;
+  border-radius: $radiusLarge;
+  transition:
+    border-color $defaultTransition,
+    background-color $defaultTransition;
+
+  &.dropZoneActive {
+    background-color: $primarySoftColor;
+    border-color: $primaryColor;
+  }
+
+  .uploadIcon {
+    margin-bottom: $spacingMd;
+    color: $placeholderColor;
+  }
+
+  .uploadText {
+    margin: 0 0 $spacingLg;
+    color: $secondaryTextColor;
+  }
+
+  .uploadBtn {
+    padding: $spacingSm $spacingXl;
+    font-family: inherit;
+    font-weight: $mediumTextWeight;
+    color: $inverseTextColor;
+    background-color: $primaryColor;
+    border: none;
+    border-radius: $defaultRadius;
+    box-shadow: $defaultShadow;
+    cursor: pointer;
+    transition: background-color $defaultTransition;
+
+    &:hover {
+      background-color: $primaryHoverColor;
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px $primaryFocusColor;
+    }
+  }
+
+  .hiddenInput {
+    display: none;
+  }
+}
+
+.tableResponsive {
+  overflow-x: auto;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $radiusMedium;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+
+  thead tr th {
+    padding: $spacingMd $spacingLg;
+    font-weight: $mediumTextWeight;
+    color: $secondaryTextColor;
+    white-space: nowrap;
+    background-color: $surfaceMutedColor;
+    border-bottom: 1px solid $defaultBorderColor;
+  }
+
+  tbody .tableRow {
+    transition: background-color $defaultTransition;
+
+    &:hover {
+      background-color: $surfaceMutedColor;
+    }
+
+    td {
+      padding: $spacingMd $spacingLg;
+      vertical-align: middle;
+      border-bottom: 1px solid $defaultBorderColor;
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.thFilename,
+.tdFilename {
+  width: 28%;
+}
+
+.thUploadDate,
+.tdUploadDate {
+  width: 14%;
+  white-space: nowrap;
+  color: $subtextColor;
+}
+
+.thDimensions,
+.tdDimensions {
+  width: 25%;
+}
+
+.thMeasures,
+.tdMeasures {
+  width: 23%;
+}
+
+.thActions,
+.tdActions {
+  width: 10%;
+  text-align: center;
+}
+
+.fileNameCell {
+  display: flex;
+  align-items: center;
+  gap: $spacingSm;
+  min-width: 0;
+
+  .fileIcon {
+    flex-shrink: 0;
+    color: $subtextColor;
+
+    &.csv {
+      color: $subtextColor;
+    }
+
+    &.xlsx {
+      color: $fileXlsxColor;
+    }
+
+    &.json {
+      color: $fileJsonColor;
+    }
+
+    &.xml {
+      color: $fileXmlColor;
+    }
+  }
+
+  .fileNameText {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+.badgeGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacingXs + 2px;
+}
+
+.dimensionBadge,
+.measureBadge {
+  padding: 2px $spacingMd;
+  font-size: $smallFontSize;
+  white-space: nowrap;
+  border-radius: $radiusRound;
+}
+
+.dimensionBadge {
+  color: $primaryHoverColor;
+  background-color: $primarySoftColor;
+  border: 1px solid $primaryBorderColor;
+}
+
+.measureBadge {
+  color: $successColor;
+  background-color: $successSoftColor;
+  border: 1px solid transparent;
+}
+
+.actionsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: $spacingXs;
+
+  .deleteButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    background: transparent;
+    border: none;
+    border-radius: $radiusSmall;
+    cursor: pointer;
+    transition:
+      color $defaultTransition,
+      background-color $defaultTransition;
+
+    &:focus-visible {
+      outline: 2px solid $primaryColor;
+      outline-offset: 1px;
+    }
+  }
+
+  .deleteButton {
+    gap: $spacingXs + 2px;
+    padding: $spacingXs $spacingSm;
+    color: $subtextColor;
+
+    &:hover {
+      color: $dangerColor;
+      background-color: $dangerSoftColor;
+    }
+  }
+
+  .moreButton {
+    padding: $spacingXs;
+    color: $placeholderColor;
+
+    &:hover {
+      color: $secondaryTextColor;
+      background-color: $hoverBackgroundColor;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .main {
+    padding: $spacingLg $spacingLg 40px;
+  }
+
+  .card {
+    padding: $spacingLg;
+  }
+
+  .table {
+    min-width: 720px;
+  }
+}
