@@ -1,86 +1,78 @@
 import classNames from 'classnames'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
+import type { UploadResponse } from '../../api/types'
+import { uploadApi } from '../../api/uploads'
 import { Icon } from '../../components/Icon'
+import { handleApiError } from '../../utils/errors'
 import css from './index.module.scss'
 
-export type FileItem = {
-  id: string
-  name: string
-  uploadDate: string
-  dimensions: string[]
-  measures: string[]
-  fileType: 'csv' | 'xlsx' | 'json' | 'xml'
-}
+const CURRENT_USER_ID = 1
 
-const INITIAL_FILES: FileItem[] = [
-  {
-    id: '1',
-    name: 'Q4_Performance_Data.csv',
-    uploadDate: 'Oct 29, 2026',
-    dimensions: ['Department', 'Date', 'Departments'],
-    measures: ['Hours', 'Salary'],
-    fileType: 'csv',
-  },
-  {
-    id: '2',
-    name: 'Employee_Registry.xlsx',
-    uploadDate: 'Oct 25, 2026',
-    dimensions: ['Department', 'Date', 'Region'],
-    measures: ['Salary', 'Department'],
-    fileType: 'xlsx',
-  },
-  {
-    id: '3',
-    name: 'Financials_2025.json',
-    uploadDate: 'Oct 20, 2026',
-    dimensions: ['Category', 'Status'],
-    measures: ['Hours', 'Revenue', 'Count'],
-    fileType: 'json',
-  },
-  {
-    id: '4',
-    name: 'Operations_Logs.xml',
-    uploadDate: 'Oct 20, 2026',
-    dimensions: ['Status'],
-    measures: ['Count', 'Cost'],
-    fileType: 'xml',
-  },
-]
-
-const getFileType = (filename: string): FileItem['fileType'] => {
+const getFileIcon = (filename: string) => {
   const name = filename.toLowerCase()
-
   if (name.endsWith('.xlsx') || name.endsWith('.xls')) {
-    return 'xlsx'
+    return <Icon name="fileSpreadsheet" className={classNames(css.fileIcon, css.xlsx)} />
   }
   if (name.endsWith('.json')) {
-    return 'json'
+    return <Icon name="fileCode" className={classNames(css.fileIcon, css.json)} />
   }
   if (name.endsWith('.xml')) {
-    return 'xml'
+    return <Icon name="fileCode2" className={classNames(css.fileIcon, css.xml)} />
   }
-  return 'csv'
+  return <Icon name="fileText" className={classNames(css.fileIcon, css.csv)} />
+}
+
+const formatDate = (dateStr: string | null) => {
+  if (!dateStr) {
+    return 'Unknown'
+  }
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
 }
 
 export const DataSourcePage = () => {
-  const [files, setFiles] = useState<FileItem[]>(INITIAL_FILES)
+  const [files, setFiles] = useState<UploadResponse[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
 
-  const handleAcceptedFile = (file: File) => {
-    const newEntry: FileItem = {
-      id: crypto.randomUUID(),
-      name: file.name,
-      uploadDate: new Date().toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      }),
-      dimensions: ['Imported_Dim'],
-      measures: ['Imported_Measure'],
-      fileType: getFileType(file.name),
+  useEffect(() => {
+    const fetchFiles = async () => {
+      try {
+        setIsLoading(true)
+        const data = await uploadApi.getUploads(CURRENT_USER_ID)
+        setFiles(data)
+      } catch (error) {
+        handleApiError(error, 'Не удалось получить список файлов')
+      } finally {
+        setIsLoading(false)
+      }
     }
+    fetchFiles()
+  }, [])
 
-    setFiles((prev) => [newEntry, ...prev])
+  const handleAcceptedFile = async (file: File) => {
+    try {
+      setIsUploading(true)
+      const uploadedRecord = await uploadApi.uploadFile(CURRENT_USER_ID, file)
+      setFiles((prev) => [uploadedRecord, ...prev])
+    } catch (error) {
+      handleApiError(error, 'Ошибка при загрузке файла')
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const handleDelete = async (id: number) => {
+    try {
+      await uploadApi.deleteUpload(id, CURRENT_USER_ID)
+      setFiles((prev) => prev.filter((file) => file.id !== id))
+    } catch (error) {
+      handleApiError(error, 'Не удалось удалить файл')
+    }
   }
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
@@ -100,27 +92,9 @@ export const DataSourcePage = () => {
       }
     },
     onDropRejected: (fileRejections) => {
-      const errorMsg = fileRejections[0]?.errors[0]?.message
-      alert(`Upload error: ${errorMsg}`)
+      alert(`Upload error: ${fileRejections[0]?.errors[0]?.message}`)
     },
   })
-
-  const getFileIcon = (type: FileItem['fileType']) => {
-    switch (type) {
-      case 'xlsx':
-        return <Icon name="fileSpreadsheet" className={classNames(css.fileIcon, css.xlsx)} />
-      case 'json':
-        return <Icon name="fileCode" className={classNames(css.fileIcon, css.json)} />
-      case 'xml':
-        return <Icon name="fileCode2" className={classNames(css.fileIcon, css.xml)} />
-      default:
-        return <Icon name="fileText" className={classNames(css.fileIcon, css.csv)} />
-    }
-  }
-
-  const handleDelete = (id: string) => {
-    setFiles((prev) => prev.filter((file) => file.id !== id))
-  }
 
   return (
     <div className={css.container}>
@@ -131,12 +105,15 @@ export const DataSourcePage = () => {
             {...getRootProps()}
             className={classNames(css.dropZone, {
               [css.dropZoneActive]: isDragActive,
+              [css.disabled]: isUploading,
             })}
           >
             <input {...getInputProps()} className={css.hiddenInput} />
             <Icon name="uploadCloud" className={css.uploadIcon} size={44} strokeWidth={1.5} />
-            <p className={css.uploadText}>Drag & drop CSV, Excel, JSON or XML</p>
-            <button type="button" className={css.uploadBtn} onClick={open}>
+            <p className={css.uploadText}>
+              {isUploading ? 'Uploading and parsing file...' : 'Drag & drop CSV, Excel, JSON or XML'}
+            </p>
+            <button type="button" className={css.uploadBtn} onClick={open} disabled={isUploading}>
               Upload File
             </button>
           </div>
@@ -153,43 +130,57 @@ export const DataSourcePage = () => {
                 </tr>
               </thead>
               <tbody>
-                {files.map((file) => (
-                  <tr key={file.id} className={css.tableRow}>
-                    <td className={css.tdFilename}>
-                      <div className={css.fileNameCell}>
-                        {getFileIcon(file.fileType)}
-                        <span className={css.fileNameText}>{file.name}</span>
-                      </div>
-                    </td>
-                    <td className={css.tdUploadDate}>{file.uploadDate}</td>
-                    <td className={css.tdDimensions}>
-                      <div className={css.badgeGroup}>
-                        {file.dimensions.map((dim, idx) => (
-                          <span key={idx} className={css.dimensionBadge}>
-                            {dim}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className={css.tdMeasures}>
-                      <div className={css.badgeGroup}>
-                        {file.measures.map((measure, idx) => (
-                          <span key={idx} className={css.measureBadge}>
-                            {measure}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className={css.tdActions}>
-                      <div className={css.actionsContainer}>
-                        <button type="button" className={css.deleteButton} onClick={() => handleDelete(file.id)}>
-                          <Icon name="trash" size={16} />
-                          <span>Delete</span>
-                        </button>
-                      </div>
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: 'center', padding: '24px' }}>
+                      Loading data sources...
                     </td>
                   </tr>
-                ))}
+                ) : files.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: 'center', padding: '24px' }}>
+                      No files uploaded yet. Upload a CSV, XLSX, JSON or XML file to get started.
+                    </td>
+                  </tr>
+                ) : (
+                  files.map((file) => (
+                    <tr key={file.id} className={css.tableRow}>
+                      <td className={css.tdFilename}>
+                        <div className={css.fileNameCell}>
+                          {getFileIcon(file.filename)}
+                          <span className={css.fileNameText}>{file.filename}</span>
+                        </div>
+                      </td>
+                      <td className={css.tdUploadDate}>{formatDate(file.created_at)}</td>
+                      <td className={css.tdDimensions}>
+                        <div className={css.badgeGroup}>
+                          {file.dimensions.map((dim, idx) => (
+                            <span key={idx} className={css.dimensionBadge}>
+                              {dim}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className={css.tdMeasures}>
+                        <div className={css.badgeGroup}>
+                          {file.measures.map((measure, idx) => (
+                            <span key={idx} className={css.measureBadge}>
+                              {measure}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className={css.tdActions}>
+                        <div className={css.actionsContainer}>
+                          <button type="button" className={css.deleteButton} onClick={() => handleDelete(file.id)}>
+                            <Icon name="trash" size={16} />
+                            <span>Delete</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
