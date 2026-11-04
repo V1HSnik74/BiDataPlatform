@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import BigInteger, String, ARRAY, ForeignKey, Integer, DateTime, func
 from sqlalchemy.orm import Mapped, relationship, mapped_column
-from typing import List
+from typing import List, Optional
 
 from app.db.base import Base
 
@@ -36,10 +36,10 @@ class Graph(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String, nullable=False)
     chart_type: Mapped[str] = mapped_column(String, nullable=False)
-    x_axis: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=False)
+    x_axis: Mapped[str] = mapped_column(String, nullable=False)
     y_axis: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=False)
-    aggregation_func: Mapped[str] = mapped_column(String, nullable=False)
-    limit: Mapped[int] = mapped_column(Integer)
+    aggregation_func: Mapped[Optional[str]] = mapped_column(String)
+    limit: Mapped[Optional[int]] = mapped_column(Integer)
     user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     upload_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("uploads.id", ondelete="CASCADE"), nullable=False)
 
