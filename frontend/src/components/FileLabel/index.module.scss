@@ -1,0 +1,39 @@
+.fileLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  height: 100%;
+}
+
+.fileIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-1px);
+  flex-shrink: 0;
+
+  &.xlsx {
+    color: #16a34a;
+  }
+  &.csv {
+    color: #2563eb;
+  }
+  &.json {
+    color: #d97706;
+  }
+  &.xml {
+    color: #9333ea;
+  }
+}
+
+.fileName {
+  display: block;
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}

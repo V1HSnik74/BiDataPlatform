@@ -9,9 +9,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "prettify": "prettier --log-level warn --cache --write '{src/**/*,*}.{ts,tsx,js,json,scss,yml}' '!**/{node_modules,dist}/**/*'",
-    "gen:api": "pnpm dlx openapi-typescript http://localhost:8000/openapi.json -o src/api/schema.d.ts"
+    "gen:api": "pnpm dlx openapi-typescript http://localhost:8000/openapi.json -o src/api/schema.d.ts",
+    "bdev": "cd .. && ./.venv/bin/uvicorn app.main:app --app-dir backend --reload --port 8000"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.105.3",
     "axios": "^1.21.0",
     "classnames": "^2.5.1",
     "lucide-react": "^1.64.0",
@@ -19,6 +21,7 @@
     "react-dom": "^19.3.1",
     "react-dropzone": "^20.1.4",
     "react-router-dom": "^7.18.5",
+    "recharts": "^3.10.1",
     "reset-css": "^5.0.2"
   },
   "devDependencies": {

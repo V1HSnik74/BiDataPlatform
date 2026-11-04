@@ -1,0 +1,59 @@
+.sectionBlock {
+  margin-bottom: 1.25rem;
+
+  .sectionTitle {
+    display: block;
+    font-size: 0.725rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+
+  .badgeCloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+}
+
+.dimensionBadge {
+  background-color: #dbeafe;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.3rem 0.85rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+
+  &:hover,
+  &.badgeActive {
+    background-color: #bfdbfe;
+  }
+}
+
+.measureBadge {
+  background-color: #d1fae5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.3rem 0.85rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+
+  &:hover,
+  &.badgeActive {
+    background-color: #a7f3d0;
+  }
+}
+
+.emptyHint {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}

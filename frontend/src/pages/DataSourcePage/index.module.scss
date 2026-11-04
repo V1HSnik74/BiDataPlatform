@@ -155,40 +155,6 @@ $fileXmlColor: #0284c7;
   text-align: center;
 }
 
-.fileNameCell {
-  display: flex;
-  align-items: center;
-  gap: $spacingSm;
-  min-width: 0;
-
-  .fileIcon {
-    flex-shrink: 0;
-    color: $subtextColor;
-
-    &.csv {
-      color: $subtextColor;
-    }
-
-    &.xlsx {
-      color: $fileXlsxColor;
-    }
-
-    &.json {
-      color: $fileJsonColor;
-    }
-
-    &.xml {
-      color: $fileXmlColor;
-    }
-  }
-
-  .fileNameText {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-}
-
 .badgeGroup {
   display: flex;
   flex-wrap: wrap;

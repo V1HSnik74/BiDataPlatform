@@ -1,0 +1,11 @@
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fieldLabel {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #1e293b;
+}

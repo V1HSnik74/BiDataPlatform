@@ -3,25 +3,12 @@ import { useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import type { UploadResponse } from '../../api/types'
 import { uploadApi } from '../../api/uploads'
+import { FileLabel } from '../../components/FileLabel'
 import { Icon } from '../../components/Icon'
 import { handleApiError } from '../../utils/errors'
 import css from './index.module.scss'
 
 const CURRENT_USER_ID = 1
-
-const getFileIcon = (filename: string) => {
-  const name = filename.toLowerCase()
-  if (name.endsWith('.xlsx') || name.endsWith('.xls')) {
-    return <Icon name="fileSpreadsheet" className={classNames(css.fileIcon, css.xlsx)} />
-  }
-  if (name.endsWith('.json')) {
-    return <Icon name="fileCode" className={classNames(css.fileIcon, css.json)} />
-  }
-  if (name.endsWith('.xml')) {
-    return <Icon name="fileCode2" className={classNames(css.fileIcon, css.xml)} />
-  }
-  return <Icon name="fileText" className={classNames(css.fileIcon, css.csv)} />
-}
 
 const formatDate = (dateStr: string | null) => {
   if (!dateStr) {
@@ -146,10 +133,7 @@ export const DataSourcePage = () => {
                   files.map((file) => (
                     <tr key={file.id} className={css.tableRow}>
                       <td className={css.tdFilename}>
-                        <div className={css.fileNameCell}>
-                          {getFileIcon(file.filename)}
-                          <span className={css.fileNameText}>{file.filename}</span>
-                        </div>
+                        <FileLabel filename={file.filename} iconSize={18} />
                       </td>
                       <td className={css.tdUploadDate}>{formatDate(file.created_at)}</td>
                       <td className={css.tdDimensions}>

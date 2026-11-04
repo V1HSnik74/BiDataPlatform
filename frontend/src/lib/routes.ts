@@ -7,4 +7,5 @@ export const ROUTES = {
     path: '/sources/:id',
     build: (id: number | string) => `/sources/${id}`,
   },
+  NEWCHART: '/dashboards/new',
 } as const
