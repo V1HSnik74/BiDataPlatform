@@ -21,7 +21,7 @@ export type paths = {
     patch?: never
     trace?: never
   }
-  '/api/uploads/': {
+  '/api/uploads': {
     parameters: {
       query?: never
       header?: never
@@ -29,10 +29,10 @@ export type paths = {
       cookie?: never
     }
     /** Get Uploads */
-    get: operations['get_uploads_api_uploads__get']
+    get: operations['get_uploads_api_uploads_get']
     put?: never
     /** Upload File */
-    post: operations['upload_file_api_uploads__post']
+    post: operations['upload_file_api_uploads_post']
     delete?: never
     options?: never
     head?: never
@@ -56,14 +56,111 @@ export type paths = {
     patch?: never
     trace?: never
   }
+  '/api/graphs/preview': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Preview Graph */
+    post: operations['preview_graph_api_graphs_preview_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/graphs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Graphs */
+    get: operations['get_graphs_api_graphs_get']
+    put?: never
+    /** Create Graph */
+    post: operations['create_graph_api_graphs_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/graphs/{graph_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Graph */
+    delete: operations['delete_graph_api_graphs__graph_id__delete']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export type components = {
   schemas: {
-    /** Body_upload_file_api_uploads__post */
-    Body_upload_file_api_uploads__post: {
+    /** Body_upload_file_api_uploads_post */
+    Body_upload_file_api_uploads_post: {
       /** File */
       file: string
+    }
+    /** GraphBase */
+    GraphBase: {
+      /** Title */
+      title: string
+      /** Chart Type */
+      chart_type: string
+      /** Upload Id */
+      upload_id: number
+      /** X Axis */
+      x_axis: string
+      /** Y Axis */
+      y_axis: string[]
+      /** Aggregation Func */
+      aggregation_func: string | null
+      /** Limit */
+      limit: number | null
+    }
+    /** GraphDeleteResponse */
+    GraphDeleteResponse: {
+      /** Id */
+      id: number
+      /** Message */
+      message: string
+    }
+    /** GraphResponse */
+    GraphResponse: {
+      /** Title */
+      title: string
+      /** Chart Type */
+      chart_type: string
+      /** Upload Id */
+      upload_id: number
+      /** X Axis */
+      x_axis: string
+      /** Y Axis */
+      y_axis: string[]
+      /** Aggregation Func */
+      aggregation_func: string | null
+      /** Limit */
+      limit: number | null
+      /** Id */
+      id: number
+      /** User Id */
+      user_id: number
     }
     /** HTTPValidationError */
     HTTPValidationError: {
@@ -87,8 +184,6 @@ export type components = {
       measures: string[]
       /** Id */
       id: number
-      /** Filepath */
-      filepath: string
       /** User Id */
       user_id: number
       /** Created At */
@@ -136,11 +231,9 @@ export type operations = {
       }
     }
   }
-  get_uploads_api_uploads__get: {
+  get_uploads_api_uploads_get: {
     parameters: {
-      query: {
-        user_id: number
-      }
+      query?: never
       header?: never
       path?: never
       cookie?: never
@@ -156,29 +249,18 @@ export type operations = {
           'application/json': components['schemas']['UploadResponse'][]
         }
       }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
     }
   }
-  upload_file_api_uploads__post: {
+  upload_file_api_uploads_post: {
     parameters: {
-      query: {
-        user_id: number
-      }
+      query?: never
       header?: never
       path?: never
       cookie?: never
     }
     requestBody: {
       content: {
-        'multipart/form-data': components['schemas']['Body_upload_file_api_uploads__post']
+        'multipart/form-data': components['schemas']['Body_upload_file_api_uploads_post']
       }
     }
     responses: {
@@ -204,9 +286,7 @@ export type operations = {
   }
   delete_upload_api_uploads__upload_id__delete: {
     parameters: {
-      query: {
-        user_id: number
-      }
+      query?: never
       header?: never
       path: {
         upload_id: number
@@ -222,6 +302,123 @@ export type operations = {
         }
         content: {
           'application/json': components['schemas']['UploadDeleteResponse']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  preview_graph_api_graphs_preview_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GraphBase']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_graphs_api_graphs_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GraphResponse'][]
+        }
+      }
+    }
+  }
+  create_graph_api_graphs_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GraphBase']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GraphResponse']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  delete_graph_api_graphs__graph_id__delete: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        graph_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GraphDeleteResponse']
         }
       }
       /** @description Validation Error */

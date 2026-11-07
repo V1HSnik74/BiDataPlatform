@@ -8,8 +8,6 @@ import { Icon } from '../../components/Icon'
 import { handleApiError } from '../../utils/errors'
 import css from './index.module.scss'
 
-const CURRENT_USER_ID = 1
-
 const formatDate = (dateStr: string | null) => {
   if (!dateStr) {
     return 'Unknown'
@@ -30,7 +28,7 @@ export const DataSourcePage = () => {
     const fetchFiles = async () => {
       try {
         setIsLoading(true)
-        const data = await uploadApi.getUploads(CURRENT_USER_ID)
+        const data = await uploadApi.getUploads()
         setFiles(data)
       } catch (error) {
         handleApiError(error, 'Не удалось получить список файлов')
@@ -44,7 +42,7 @@ export const DataSourcePage = () => {
   const handleAcceptedFile = async (file: File) => {
     try {
       setIsUploading(true)
-      const uploadedRecord = await uploadApi.uploadFile(CURRENT_USER_ID, file)
+      const uploadedRecord = await uploadApi.uploadFile(file)
       setFiles((prev) => [uploadedRecord, ...prev])
     } catch (error) {
       handleApiError(error, 'Ошибка при загрузке файла')
@@ -55,7 +53,7 @@ export const DataSourcePage = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await uploadApi.deleteUpload(id, CURRENT_USER_ID)
+      await uploadApi.deleteUpload(id)
       setFiles((prev) => prev.filter((file) => file.id !== id))
     } catch (error) {
       handleApiError(error, 'Не удалось удалить файл')

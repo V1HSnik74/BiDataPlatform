@@ -1,3 +1,5 @@
+@use '../../styles/vars' as *;
+
 .fieldGroup {
   display: flex;
   flex-direction: column;
@@ -5,43 +7,43 @@
 
   .fieldLabel {
     font-size: 0.825rem;
-    font-weight: 600;
-    color: #1e293b;
+    font-weight: $mediumTextWeight;
+    color: $secondaryTextColor;
   }
 }
 
 .dropSlot {
   min-height: 42px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background-color: #ffffff;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $radiusMedium;
+  background-color: $surfaceColor;
   display: flex;
   align-items: center;
   padding: 0.25rem 0.5rem;
 
   .placeholderText {
     font-size: 0.8rem;
-    color: #94a3b8;
+    color: $placeholderColor;
     padding-left: 0.25rem;
   }
 }
 
 .dimensionBadge {
-  background-color: #dbeafe;
-  color: #2563eb;
-  border: 1px solid #bfdbfe;
-  border-radius: 9999px;
+  background-color: $primarySoftColor;
+  color: $primaryColor;
+  border: 1px solid $primaryBorderColor;
+  border-radius: $radiusRound;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: $defaultTextWeight;
   padding: 0.3rem 0.85rem;
 }
 
 .measureBadge {
-  background-color: #d1fae5;
-  color: #059669;
-  border: 1px solid #a7f3d0;
-  border-radius: 9999px;
+  background-color: $successBadgeBg;
+  color: $successEmeraldColor;
+  border: 1px solid $successBadgeBorder;
+  border-radius: $radiusRound;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: $defaultTextWeight;
   padding: 0.3rem 0.85rem;
 }

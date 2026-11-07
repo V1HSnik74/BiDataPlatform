@@ -24,28 +24,42 @@ $strongBorderColor: #cbd5e1;
 
 $primaryColor: #2563eb;
 $primaryHoverColor: #1d4ed8;
+$primaryDarkColor: #1e40af;
 $primarySoftColor: #eff6ff;
 $primaryBorderColor: #bfdbfe;
 $primaryFocusColor: rgba(37, 99, 235, 0.2);
+$primaryFocusBorderColor: #93c5fd;
 
 $dangerColor: #ef4444;
 $dangerDarkColor: #b91c1c;
 $dangerSoftColor: #fef2f2;
 $dangerBorderColor: #fecaca;
 $successColor: #166534;
+$successAccentColor: #16a34a;
+$successEmeraldColor: #059669;
 $successSoftColor: #dcfce7;
+$successBadgeBg: #d1fae5;
+$successBadgeBorder: #a7f3d0;
 $warningColor: #854d0e;
+$warningAccentColor: #d97706;
 $warningSoftColor: #fefce8;
 $warningBorderColor: #fef08a;
+$purpleColor: #9333ea;
 
 $radiusSmall: 4px;
 $defaultRadius: 6px;
 $radiusMedium: 8px;
+$radiusCard: 10px;
 $radiusLarge: 12px;
 $radiusRound: 9999px;
+
 $defaultShadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 $elevatedShadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+$popoverShadow:
+  0 10px 15px -3px rgba(0, 0, 0, 0.08),
+  0 4px 6px -4px rgba(0, 0, 0, 0.03);
 $overlayColor: rgba(15, 23, 42, 0.45);
+
 $spacingXs: 4px;
 $spacingSm: 8px;
 $spacingMd: 12px;

@@ -1,4 +1,3 @@
-// src/api/charts.ts
 export type ChartQueryParams = {
   fileId: number
   xAxis: string

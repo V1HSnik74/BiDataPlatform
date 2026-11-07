@@ -1,3 +1,5 @@
+@use '../../styles/vars' as *;
+
 .fileLabel {
   display: flex;
   align-items: center;
@@ -14,23 +16,23 @@
   flex-shrink: 0;
 
   &.xlsx {
-    color: #16a34a;
+    color: $successAccentColor;
   }
   &.csv {
-    color: #2563eb;
+    color: $primaryColor;
   }
   &.json {
-    color: #d97706;
+    color: $warningAccentColor;
   }
   &.xml {
-    color: #9333ea;
+    color: $purpleColor;
   }
 }
 
 .fileName {
   display: block;
   font-size: 0.825rem;
-  font-weight: 500;
+  font-weight: $defaultTextWeight;
   color: inherit;
   white-space: nowrap;
   overflow: hidden;

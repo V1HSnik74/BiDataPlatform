@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { useMemo, useState } from 'react'
-import { chartApi, DEFAULT_CHART_CONFIG, type ChartConfig } from '../../api/charts'
+import { DEFAULT_CHART_CONFIG, type ChartConfig } from '../../api/charts'
+import { graphsApi } from '../../api/graphs'
 import { uploadApi } from '../../api/uploads'
 import { AxisSlot } from '../../components/AxisSlot'
 import { ChartRenderer } from '../../components/ChartRender'
@@ -12,8 +13,6 @@ import { FormField } from '../../components/FormField'
 import { Icon } from '../../components/Icon'
 import { useDebounce } from '../../hooks/useDebounce'
 import styles from './index.module.scss'
-
-const CURRENT_USER_ID = 1
 
 const CHART_TYPES = [
   { type: 'bar', icon: 'barChart' },
@@ -27,18 +26,31 @@ const AGGREGATION_OPTIONS: SelectOption<ChartConfig['aggregation']>[] = [
   { value: 'COUNT', label: 'КОЛИЧЕСТВО' },
 ]
 
+type BackendChartResponse = {
+  labels?: string[]
+  datasets?: Array<{ label: string; data: number[] }>
+}
+
 export const ChartBuilder = () => {
   const [config, setConfig] = useState<ChartConfig>(DEFAULT_CHART_CONFIG)
   const debouncedTopN = useDebounce(config.topN, 300)
-  const updateConfig = <T extends keyof ChartConfig>(key: T, value: ChartConfig[T]) => {
-    setConfig((prev) => ({ ...prev, [key]: value }))
-  }
+
   const { data: userFiles = [] } = useQuery({
-    queryKey: ['user-uploads', CURRENT_USER_ID],
-    queryFn: () => uploadApi.getUploads(CURRENT_USER_ID),
+    queryKey: ['user-uploads'],
+    queryFn: () => uploadApi.getUploads(),
   })
-  const activeFileId = config.fileId ?? userFiles[0]?.id ?? null
-  const activeFile = useMemo(() => userFiles.find((f) => f.id === activeFileId), [userFiles, activeFileId])
+
+  const currentFileId = config.fileId ?? userFiles[0]?.id ?? null
+  const activeFile = userFiles.find((f) => f.id === currentFileId)
+
+  const updateConfig = <T extends keyof ChartConfig>(key: T, value: ChartConfig[T]) => {
+    setConfig((prev) => ({ ...prev, fileId: currentFileId, [key]: value }))
+  }
+
+  const handleSelectFile = (fileId: number) => {
+    setConfig((prev) => ({ ...prev, fileId, xAxis: '', yAxis: '' }))
+  }
+
   const fileOptions = useMemo(
     () =>
       userFiles.map((file) => ({
@@ -47,28 +59,36 @@ export const ChartBuilder = () => {
       })),
     [userFiles]
   )
-  const handleSelectFile = (fileId: number) => {
-    setConfig((prev) => ({
-      ...prev,
-      fileId,
-      xAxis: '',
-      yAxis: '',
-    }))
-  }
-  const isQueryReady = Boolean(activeFileId && config.xAxis && config.yAxis)
-  const { data: chartData = [], isLoading } = useQuery({
-    queryKey: ['chart-data', activeFileId, config.xAxis, config.yAxis, config.aggregation, debouncedTopN],
+
+  const { data: rawChartData, isLoading } = useQuery({
+    queryKey: ['chart-preview', currentFileId, config.xAxis, config.yAxis, config.aggregation, debouncedTopN],
     queryFn: () =>
-      chartApi.getChartData({
-        fileId: activeFileId!,
-        xAxis: config.xAxis,
-        yAxis: config.yAxis,
-        aggregation: config.aggregation,
+      graphsApi.previewGraph({
+        title: config.title || 'Безымянный график',
+        chart_type: 'bar',
+        upload_id: currentFileId!,
+        x_axis: config.xAxis,
+        y_axis: [config.yAxis],
+        aggregation_func: config.aggregation,
         limit: debouncedTopN,
       }),
-    enabled: isQueryReady,
+    enabled: Boolean(currentFileId && config.xAxis && config.yAxis),
     staleTime: 1000 * 60 * 10,
   })
+
+  const chartData = useMemo(() => {
+    const res = rawChartData as BackendChartResponse | undefined
+    const labels = res?.labels
+    const values = res?.datasets?.[0]?.data
+
+    if (!Array.isArray(labels) || !Array.isArray(values)) {
+      return []
+    }
+    return labels.slice(0, debouncedTopN).map((label, idx) => ({
+      x: String(label),
+      y: Number(values[idx] ?? 0),
+    }))
+  }, [rawChartData, debouncedTopN])
 
   return (
     <div className={styles.builderLayout}>
@@ -88,7 +108,7 @@ export const ChartBuilder = () => {
             <span className={styles.sourceLabel}>Источник данных</span>
             <CustomSelect
               className={styles.sourceSelectDropdown}
-              value={activeFileId}
+              value={currentFileId}
               options={fileOptions}
               onChange={handleSelectFile}
               placeholder="Выберите файл"
@@ -168,7 +188,7 @@ export const ChartBuilder = () => {
         <main className={styles.previewCard}>
           <h1 className={styles.chartTitle}>{config.title}</h1>
           <div className={styles.chartArea}>
-            <ChartRenderer data={chartData} config={config} isLoading={isLoading} />
+            <ChartRenderer data={chartData} config={{ ...config, fileId: currentFileId }} isLoading={isLoading} />
           </div>
         </main>
       </div>

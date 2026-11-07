@@ -1,11 +1,13 @@
+@use '../../styles/vars' as *;
+
 .sectionBlock {
   margin-bottom: 1.25rem;
 
   .sectionTitle {
     display: block;
     font-size: 0.725rem;
-    font-weight: 600;
-    color: #64748b;
+    font-weight: $mediumTextWeight;
+    color: $subtextColor;
     margin-bottom: 0.75rem;
     letter-spacing: 0.04em;
   }
@@ -18,42 +20,42 @@
 }
 
 .dimensionBadge {
-  background-color: #dbeafe;
-  color: #2563eb;
-  border: 1px solid #bfdbfe;
-  border-radius: 9999px;
+  background-color: $primarySoftColor;
+  color: $primaryColor;
+  border: 1px solid $primaryBorderColor;
+  border-radius: $radiusRound;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: $defaultTextWeight;
   padding: 0.3rem 0.85rem;
   cursor: pointer;
   outline: none;
-  transition: all 0.15s ease;
+  transition: all $defaultTransition;
 
   &:hover,
   &.badgeActive {
-    background-color: #bfdbfe;
+    background-color: $primaryBorderColor;
   }
 }
 
 .measureBadge {
-  background-color: #d1fae5;
-  color: #059669;
-  border: 1px solid #a7f3d0;
-  border-radius: 9999px;
+  background-color: $successBadgeBg;
+  color: $successEmeraldColor;
+  border: 1px solid $successBadgeBorder;
+  border-radius: $radiusRound;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: $defaultTextWeight;
   padding: 0.3rem 0.85rem;
   cursor: pointer;
   outline: none;
-  transition: all 0.15s ease;
+  transition: all $defaultTransition;
 
   &:hover,
   &.badgeActive {
-    background-color: #a7f3d0;
+    background-color: $successBadgeBorder;
   }
 }
 
 .emptyHint {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: $placeholderColor;
 }
