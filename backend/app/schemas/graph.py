@@ -19,3 +19,12 @@ class GraphResponse(GraphBase):
 class GraphDeleteResponse(BaseModel):
     id: int
     message: str
+
+class GraphUpdate(BaseModel):
+    title: Optional[str] = None
+    chart_type: Optional[str] = None
+    upload_id: Optional[int] = None
+    x_axis: Optional[str] = None
+    y_axis: Optional[List[str]] = None
+    aggregation_func: Optional[str] = None
+    limit: Optional[int] = None

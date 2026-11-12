@@ -9,7 +9,7 @@ from fastapi import HTTPException
 from app.models.models import Upload, Graph
 from app.repository.graphRepository import GraphRepository
 from app.repository.uploadRepository import UploadRepository
-from app.schemas.graph import GraphBase
+from app.schemas.graph import GraphBase, GraphUpdate
 from app.services.file_parser import file_parser, FileParserError
 
 
@@ -51,6 +51,15 @@ class GraphService:
             aggregation_func = graph.aggregation_func or None,
             limit = graph.limit or 10
         )
+
+    def update_graph(self, graph_upd: GraphUpdate, user_id: int, graph_id: int) -> Graph:
+        graph = self.graph_repo.get(graph_id) or None
+        if not graph:
+            raise HTTPException(status_code=404, detail="График не найден")
+        if graph.user_id != user_id:
+            raise HTTPException(status_code=403, detail="Нет прав на редактирование этого графика")
+        update_data = graph_upd.model_dump(exclude_unset=True)
+        return self.graph_repo.update(db_obj=graph, **update_data)
 
     def _aggregate_data(
             self,
