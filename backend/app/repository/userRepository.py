@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
@@ -26,3 +26,7 @@ class UserRepository(BaseCrudRepository[User]):
     def get_by_phone_num(self, phone_num: str) -> Optional[User]:
         user = select(User).where(User.phone_num == phone_num)
         return self.db.scalar(user)
+
+    def get_all(self) -> List[User]:
+        users = select(User)
+        return list(self.db.scalars(users).all())

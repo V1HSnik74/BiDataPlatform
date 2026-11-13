@@ -13,8 +13,9 @@ class User(Base):
     password: Mapped[str] = mapped_column(String, nullable=False)
     role: Mapped[str] = mapped_column(String, nullable=False)
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
-    phone_num: Mapped[str] = mapped_column(String, unique=True)
+    phone_num: Mapped[Optional[str]] = mapped_column(String, unique=True)
     scope: Mapped[str] = mapped_column(String, nullable=False)
+    department: Mapped[Optional[str]] = mapped_column(String)
     uploads = relationship("Upload", back_populates="user", cascade="all, delete-orphan")
     graphs = relationship("Graph", back_populates="user", cascade="all, delete-orphan")
 
@@ -25,6 +26,7 @@ class Upload(Base):
     filepath: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     dimensions: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=False)
     measures: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=False)
+    department: Mapped[Optional[str]] = mapped_column(String)
     user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone = True), nullable=False, server_default=func.now())
 

@@ -4,6 +4,7 @@ from starlette.middleware.cors import CORSMiddleware
 from app.api.uploads import router as uploads_router
 from app.api.graphs import router as graphs_router
 from app.api.auth import router as auth_router
+from app.api.admin_panel import router as admin_panel_router
 
 app = FastAPI(
     title="BI Data Platform API",
@@ -27,6 +28,7 @@ def check_health():
 app.include_router(uploads_router, prefix="/api")
 app.include_router(graphs_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")
+app.include_router(admin_panel_router, prefix="/api")
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)

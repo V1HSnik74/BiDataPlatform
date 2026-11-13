@@ -4,17 +4,34 @@ from typing import List
 from fastapi import HTTPException, UploadFile
 from starlette import status
 
-from app.models.models import Upload
+from app.models.models import Upload, User
 from app.repository.uploadRepository import UploadRepository
+from app.repository.userRepository import UserRepository
 from app.services.file_parser import file_parser, FileParserError
 from app.services.file_storage import file_storage
 
 
 class UploadService:
-    def __init__(self, upload_repo: UploadRepository):
+    def __init__(self, upload_repo: UploadRepository, user_repo: UserRepository):
         self.upload_repo = upload_repo
+        self.user_repo = user_repo
+
+    def _get_user(self, user_id: int) -> User:
+        user = self.user_repo.get(user_id)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Пользователь не найден"
+            )
+        return user
 
     def upload_file(self, file: UploadFile, user_id: int) -> Upload:
+        user = self._get_user(user_id)
+        if not user.department and user.role != "admin":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Нет прав на загрузку файлов, так как не назначен отдел"
+            )
         original_filename = file.filename or "unknown_filename"
         ext = Path(original_filename).suffix.lower()
         if ext not in file_parser.SUPPORTED_EXTENSIONS:
@@ -51,17 +68,23 @@ class UploadService:
             filepath=parquet_filepath,
             dimensions=dimensions,
             measures=measures,
-            user_id=user_id)
+            user_id=user_id,
+            department=user.department)
 
     def get_user_uploads(self, user_id: int) -> List[Upload]:
-        return self.upload_repo.get_by_user_id(user_id)
+        user = self._get_user(user_id)
+        return self.upload_repo.get_available_uploads(user)
 
     def delete_upload(self, upload_id: int, user_id: int):
+        user = self._get_user(user_id)
         upload = self.upload_repo.get(upload_id)
-        if not upload or upload.user_id != user_id:
+        if not upload:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Файл не найден"
             )
+        if user.id != upload.user_id and user.role != "admin":
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                                detail="Нет доступа на удаление этого файла")
         file_storage.delete_file(upload.filepath)
         self.upload_repo.delete(upload_id)
