@@ -1,0 +1,115 @@
+@use '../../styles/vars' as *;
+
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  &:hover .avatar,
+  &.triggerActive .avatar {
+    border-color: $primaryColor;
+    box-shadow: 0 0 0 3px $primaryFocusColor;
+  }
+
+  &:hover .chevron,
+  &.triggerActive .chevron {
+    color: $defaultTextColor;
+  }
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: $radiusRound;
+  background-color: #e0e7ff;
+  border: 1px solid #c7d2fe;
+  color: $primaryColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition:
+    border-color $defaultTransition,
+    box-shadow $defaultTransition;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.chevron {
+  color: $subtextColor;
+  transition:
+    transform $defaultTransition,
+    color $defaultTransition;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + $spacingSm);
+  right: 0;
+  min-width: 170px;
+  padding: $spacingXs;
+  background-color: $surfaceColor;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $radiusMedium;
+  box-shadow: $popoverShadow;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: $spacingSm;
+  width: 100%;
+  padding: $spacingSm $spacingMd;
+  background: transparent;
+  border: none;
+  border-radius: $defaultRadius;
+  color: $secondaryTextColor;
+  font-family: $defaultFontFamily;
+  font-size: 13.5px;
+  font-weight: 400;
+  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition:
+    background-color $defaultTransition,
+    color $defaultTransition;
+
+  &:hover {
+    background-color: $hoverBackgroundColor;
+    color: $defaultTextColor;
+  }
+}
+
+.dangerItem {
+  color: $dangerColor;
+
+  &:hover {
+    background-color: $dangerSoftColor;
+    color: $dangerDarkColor;
+  }
+}

@@ -1,0 +1,80 @@
+@use '../../styles/vars' as *;
+
+.pageWrapper {
+  min-height: 100vh;
+  width: 100%;
+  padding: $spacingXl;
+  background-color: $surfaceMutedColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  font-family: $defaultFontFamily;
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+  padding: 36px 32px 32px;
+  background-color: $surfaceColor;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $radiusLarge;
+  box-shadow: $popoverShadow;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: $spacingXl;
+}
+
+.title {
+  margin: 0 0 $spacingSm 0;
+  color: $defaultTextColor;
+  font-size: 20.4px;
+  font-weight: $boldTextWeight;
+  line-height: 1.5;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 290px;
+  color: $subtextColor;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: $defaultLineHeight;
+}
+
+.body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer {
+  margin-top: $spacingXl;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logoWrapper {
+  width: 56px;
+  height: 56px;
+  margin-bottom: $spacingLg;
+  background-color: $primarySoftColor;
+  border: 1px solid $primaryBorderColor;
+  border-radius: $radiusLarge;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.defaultIcon {
+  color: $primaryColor;
+}

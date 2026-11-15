@@ -1,0 +1,113 @@
+@use '../../styles/vars' as *;
+
+.dashboardLayout {
+  min-height: 100vh;
+  background-color: $defaultBackgroundColor;
+  font-family: $defaultFontFamily;
+  color: $defaultTextColor;
+}
+
+.topBar {
+  height: 68px;
+  background-color: $surfaceColor;
+  border-bottom: 1px solid $defaultBorderColor;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: $largeFontSize;
+  font-weight: $boldTextWeight;
+  color: $defaultTextColor;
+  line-height: 1.2;
+}
+
+.breadcrumbs {
+  font-size: $smallFontSize;
+  color: $subtextColor;
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.addChartBtn {
+  background-color: $primaryHoverColor;
+  color: $inverseTextColor;
+  border: none;
+  border-radius: $radiusMedium;
+  padding: 0 1.25rem;
+  height: 38px;
+  font-size: $defaultFontSize;
+  font-weight: $defaultTextWeight;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color $defaultTransition;
+
+  &:hover {
+    background-color: $primaryDarkColor;
+  }
+}
+
+.contentArea {
+  padding: 1.5rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.emptyState {
+  background-color: $surfaceColor;
+  border: 1px dashed $strongBorderColor;
+  border-radius: $radiusCard;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.emptyTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: $mediumTextWeight;
+  color: $defaultTextColor;
+}
+
+.emptySubtext {
+  margin: 0 0 0.75rem;
+  font-size: $defaultFontSize;
+  color: $subtextColor;
+}

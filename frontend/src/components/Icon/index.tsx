@@ -13,6 +13,15 @@ import {
   BarChart2,
   ScatterChart,
   PieChart,
+  MoreHorizontal,
+  Loader2,
+  BarChart3,
+  Eye,
+  EyeOff,
+  User,
+  LogOut,
+  CheckCircle2,
+  Mail,
 } from 'lucide-react'
 
 const icons = {
@@ -29,6 +38,15 @@ const icons = {
   barChart: BarChart2,
   scatterChart: ScatterChart,
   pieChart: PieChart,
+  moreHorizontal: MoreHorizontal,
+  loader: Loader2,
+  logo: BarChart3,
+  showPass: Eye,
+  hidePass: EyeOff,
+  user: User,
+  logout: LogOut,
+  done: CheckCircle2,
+  mail: Mail,
 } as const
 
 export const Icon = ({ name, size = 18, ...restProps }: { name: keyof typeof icons } & LucideProps) => {

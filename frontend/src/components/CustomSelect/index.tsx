@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Icon } from '../Icon'
-import styles from './index.module.scss'
+import css from './index.module.scss'
 
 export type SelectOption<T extends string | number> = {
   value: T
@@ -41,28 +41,28 @@ export const CustomSelect = <T extends string | number>({
   }, [])
 
   return (
-    <div className={classNames(styles.selectWrapper, className)} ref={wrapperRef}>
-      <button type="button" className={styles.triggerButton} onClick={() => setIsOpen((prev) => !prev)}>
-        <div className={styles.labelGroup}>
+    <div className={classNames(css.selectWrapper, className)} ref={wrapperRef}>
+      <button type="button" className={css.triggerButton} onClick={() => setIsOpen((prev) => !prev)}>
+        <div className={css.labelGroup}>
           {icon}
-          <div className={classNames(styles.selectedText, { [styles.placeholder]: !selectedOption })}>
+          <div className={classNames(css.selectedText, { [css.placeholder]: !selectedOption })}>
             {selectedOption ? selectedOption.label : placeholder}
           </div>
         </div>
-        <Icon name="chevronDown" size={16} className={classNames(styles.chevron, { [styles.chevronOpen]: isOpen })} />
+        <Icon name="chevronDown" size={16} className={classNames(css.chevron, { [css.chevronOpen]: isOpen })} />
       </button>
 
       {isOpen && (
-        <ul className={styles.optionsList}>
+        <ul className={css.optionsList}>
           {options.length === 0 ? (
-            <li className={styles.emptyOption}>Нет доступных вариантов</li>
+            <li className={css.emptyOption}>Нет доступных вариантов</li>
           ) : (
             options.map((opt) => (
               <li key={opt.value}>
                 <button
                   type="button"
-                  className={classNames(styles.optionItem, {
-                    [styles.optionActive]: opt.value === value,
+                  className={classNames(css.optionItem, {
+                    [css.optionActive]: opt.value === value,
                   })}
                   onClick={() => {
                     onChange(opt.value)

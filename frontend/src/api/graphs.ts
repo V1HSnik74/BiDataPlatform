@@ -1,5 +1,5 @@
 import { apiClient } from './client'
-import type { GraphBase, GraphResponse, GraphDeleteResponse, GraphPreviewDataPoint } from './types'
+import type { GraphBase, GraphResponse, GraphDeleteResponse, GraphPreviewDataPoint, GraphUpdate } from './types'
 
 export const graphsApi = {
   previewGraph: async (payload: GraphBase): Promise<GraphPreviewDataPoint[]> => {
@@ -14,6 +14,11 @@ export const graphsApi = {
 
   createGraph: async (payload: GraphBase): Promise<GraphResponse> => {
     const response = await apiClient.post<GraphResponse>('/api/graphs', payload)
+    return response.data
+  },
+
+  updateGraph: async (graphId: number, payload: GraphUpdate): Promise<GraphResponse> => {
+    const response = await apiClient.patch<GraphResponse>(`/api/graphs/${graphId}`, payload)
     return response.data
   },
 

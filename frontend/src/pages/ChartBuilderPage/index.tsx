@@ -1,8 +1,10 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { useMemo, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { DEFAULT_CHART_CONFIG, type ChartConfig } from '../../api/charts'
 import { graphsApi } from '../../api/graphs'
+import type { GraphBase } from '../../api/types'
 import { uploadApi } from '../../api/uploads'
 import { AxisSlot } from '../../components/AxisSlot'
 import { ChartRenderer } from '../../components/ChartRender'
@@ -12,6 +14,7 @@ import { FileLabel } from '../../components/FileLabel'
 import { FormField } from '../../components/FormField'
 import { Icon } from '../../components/Icon'
 import { useDebounce } from '../../hooks/useDebounce'
+import { ROUTES } from '../../lib/routes'
 import styles from './index.module.scss'
 
 const CHART_TYPES = [
@@ -31,8 +34,18 @@ type BackendChartResponse = {
   datasets?: Array<{ label: string; data: number[] }>
 }
 
+type LocationState = {
+  chartId?: number
+  initialConfig?: ChartConfig
+} | null
+
 export const ChartBuilder = () => {
-  const [config, setConfig] = useState<ChartConfig>(DEFAULT_CHART_CONFIG)
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const editState = location.state as LocationState
+  const editingChartId = editState?.chartId ?? null
+  const [config, setConfig] = useState<ChartConfig>(() => editState?.initialConfig ?? DEFAULT_CHART_CONFIG)
   const debouncedTopN = useDebounce(config.topN, 300)
 
   const { data: userFiles = [] } = useQuery({
@@ -76,6 +89,28 @@ export const ChartBuilder = () => {
     staleTime: 1000 * 60 * 10,
   })
 
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      const payload: GraphBase = {
+        title: config.title.trim() || 'Безымянный график',
+        chart_type: config.type,
+        upload_id: currentFileId!,
+        x_axis: config.xAxis,
+        y_axis: [config.yAxis],
+        aggregation_func: config.aggregation,
+        limit: config.topN,
+      }
+
+      return editingChartId ? graphsApi.updateGraph(editingChartId, payload) : graphsApi.createGraph(payload)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['dashboard-graphs'] })
+      navigate(ROUTES.DASHBOARDS)
+    },
+  })
+
+  const isSaveDisabled = !currentFileId || !config.xAxis || !config.yAxis || saveMutation.isPending
+
   const chartData = useMemo(() => {
     const res = rawChartData as BackendChartResponse | undefined
     const labels = res?.labels
@@ -94,7 +129,7 @@ export const ChartBuilder = () => {
     <div className={styles.builderLayout}>
       <header className={styles.topBar}>
         <div className={styles.topLeftControls}>
-          <button type="button" className={styles.backBtn}>
+          <button type="button" className={styles.backBtn} onClick={() => navigate(ROUTES.DASHBOARDS)}>
             <Icon name="back" size={20} />
           </button>
           <span className={styles.pageTitle}>Конструктор графиков</span>
@@ -116,8 +151,13 @@ export const ChartBuilder = () => {
           </div>
         </div>
         <div className={styles.topRightControls}>
-          <button type="button" className={styles.saveBtn}>
-            Сохранить на дашборд
+          <button
+            type="button"
+            className={styles.saveBtn}
+            disabled={isSaveDisabled}
+            onClick={() => saveMutation.mutate()}
+          >
+            {saveMutation.isPending ? 'Сохранение...' : 'Сохранить на дашборд'}
           </button>
         </div>
       </header>

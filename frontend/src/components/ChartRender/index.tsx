@@ -16,8 +16,8 @@ import {
   type RectangleProps,
   type DotItemDotProps,
 } from 'recharts'
-import type { ChartConfig } from '../../api/charts'
-import styles from './index.module.scss'
+import { type ChartConfig, PALETTE } from '../../api/charts'
+import css from './index.module.scss'
 
 type ChartDataPoint = { x: string; y: number }
 
@@ -30,8 +30,6 @@ type ColoredBarProps = RectangleProps & {
 type ColoredDotProps = DotItemDotProps & {
   payload?: EnrichedPoint
 }
-
-const PALETTE = ['#8fc1ff', '#10b981', '#3b82f6', '#059669', '#60a5fa', '#34d399']
 
 const AXIS_TICK_STYLE = { fill: '#64748b', fontSize: 12 }
 
@@ -75,12 +73,12 @@ const CustomTooltip = ({
   }
 
   return (
-    <div className={styles.tooltip}>
-      <div className={styles.tooltipTitle}>{point.x}</div>
-      <div className={styles.tooltipRow}>
-        <span className={styles.tooltipDot} style={{ backgroundColor: point.fill }} />
-        <span className={styles.tooltipLabel}>{measureLabel}:</span>
-        <span className={styles.tooltipValue}>{point.y}</span>
+    <div className={css.tooltip}>
+      <div className={css.tooltipTitle}>{point.x}</div>
+      <div className={css.tooltipRow}>
+        <span className={css.tooltipDot} style={{ backgroundColor: point.fill }} />
+        <span className={css.tooltipLabel}>{measureLabel}:</span>
+        <span className={css.tooltipValue}>{point.y}</span>
       </div>
     </div>
   )
@@ -101,15 +99,15 @@ export const ChartRenderer = ({
   )
 
   if (isLoading) {
-    return <div className={styles.stateBox}>Загрузка данных...</div>
+    return <div className={css.stateBox}>Загрузка данных...</div>
   }
 
   if (!config.fileId || !config.xAxis || !config.yAxis || coloredData.length === 0) {
-    return <div className={styles.stateBox}>Выберите источник данных, измерение и меру для отображения</div>
+    return <div className={css.stateBox}>Выберите источник данных, измерение и меру для отображения</div>
   }
 
   return (
-    <div className={styles.chartWrapper}>
+    <div className={css.chartWrapper}>
       <ResponsiveContainer width="100%" height="100%">
         {config.type === 'bar' ? (
           <BarChart data={coloredData} margin={{ top: 20, right: 24, left: 16, bottom: 24 }}>

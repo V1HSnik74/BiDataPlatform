@@ -1,10 +1,4 @@
-export type ChartQueryParams = {
-  fileId: number
-  xAxis: string
-  yAxis: string
-  aggregation: 'SUM' | 'AVG' | 'COUNT' | 'MIN' | 'MAX'
-  limit: number
-}
+import type { GraphResponse } from './types'
 
 export type ChartDataPoint = {
   x: string
@@ -36,33 +30,14 @@ export const DEFAULT_CHART_CONFIG: ChartConfig = {
   topN: 5,
 }
 
-const PALETTE = ['#8fc1ff', '#10b981', '#3b82f6', '#059669', '#60a5fa', '#34d399']
+export const PALETTE = ['#8fc1ff', '#10b981', '#3b82f6', '#059669', '#60a5fa', '#34d399']
 
-export const chartApi = {
-  getChartData: async (params: ChartQueryParams): Promise<ChartDataPoint[]> => {
-    await new Promise((resolve) => setTimeout(resolve, 250))
-
-    const mockCategories = [
-      'Разработка',
-      'Операции',
-      'Продажи',
-      'Маркетинг',
-      'HR',
-      'Финансы',
-      'Прочее',
-      'Склад',
-      'Логистика',
-      'ИТ-поддержка',
-    ]
-    const count = Math.min(params.limit, mockCategories.length)
-
-    return mockCategories.slice(0, count).map((category, index) => {
-      const baseValue = (count - index) * 500 + Math.floor(Math.sin(index) * 200)
-      return {
-        x: `${category}`,
-        y: Math.max(100, baseValue),
-        fill: PALETTE[index % PALETTE.length],
-      }
-    })
-  },
-}
+export const mapGraphToConfig = (graph: GraphResponse): ChartConfig => ({
+  fileId: graph.upload_id,
+  title: graph.title,
+  type: (graph.chart_type as ChartType) || 'bar',
+  xAxis: graph.x_axis,
+  yAxis: graph.y_axis[0] ?? '',
+  aggregation: (graph.aggregation_func as AggregationType) || 'SUM',
+  topN: graph.limit ?? DEFAULT_CHART_CONFIG.topN,
+})

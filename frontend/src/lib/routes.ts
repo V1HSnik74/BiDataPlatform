@@ -1,11 +1,10 @@
 export const ROUTES = {
-  HOME: '/',
   SOURCES: '/sources',
-  DASHBOARDS: '/dashboards',
+  DASHBOARDS: '/',
   ADMIN: '/admin',
-  DATASET_VIEW: {
-    path: '/sources/:id',
-    build: (id: number | string) => `/sources/${id}`,
-  },
-  NEWCHART: '/dashboards/new',
+  NEWCHART: '/newChart',
+  REGISTER: '/register',
+  LOGIN: '/login',
+  PROFILE: '/profile',
+  FORGOT_PASSWORD: '/forgot-password',
 } as const

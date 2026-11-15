@@ -1,9 +1,10 @@
-import classNames from 'classnames'
+import cn from 'classnames'
 import { NavLink, Outlet } from 'react-router-dom'
 import { ROUTES } from '../../lib/routes'
+import { UserMenu } from '../UserMenu'
 import css from './index.module.scss'
 
-const getNavClass = ({ isActive }: { isActive: boolean }) => classNames(css.navItem, { [css.navItemActive]: isActive })
+const getNavClass = ({ isActive }: { isActive: boolean }) => cn(css.navItem, { [css.navItemActive]: isActive })
 
 export const Layout = () => {
   return (
@@ -23,6 +24,7 @@ export const Layout = () => {
             </NavLink>
           </nav>
         </div>
+        <UserMenu />
       </header>
 
       <main className={css.content}>

@@ -6,8 +6,21 @@
   gap: 0.5rem;
 }
 
-.fieldLabel {
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.label {
   font-size: 0.825rem;
   font-weight: $mediumTextWeight;
   color: $secondaryTextColor;
+}
+
+.errorText {
+  color: $dangerColor;
+  font-size: $smallFontSize;
+  line-height: 1.3;
 }

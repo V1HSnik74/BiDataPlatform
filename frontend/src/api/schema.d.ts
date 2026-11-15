@@ -105,6 +105,75 @@ export type paths = {
     delete: operations['delete_graph_api_graphs__graph_id__delete']
     options?: never
     head?: never
+    /** Update Graph */
+    patch: operations['update_graph_api_graphs__graph_id__patch']
+    trace?: never
+  }
+  '/api/auth/login': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Login */
+    post: operations['login_api_auth_login_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/auth/register': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Register */
+    post: operations['register_api_auth_register_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/auth/forgot-password': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Forgot Password */
+    post: operations['forgot_password_api_auth_forgot_password_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/auth/reset-password': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reset Password */
+    post: operations['reset_password_api_auth_reset_password_post']
+    delete?: never
+    options?: never
+    head?: never
     patch?: never
     trace?: never
   }
@@ -116,6 +185,14 @@ export type components = {
     Body_upload_file_api_uploads_post: {
       /** File */
       file: string
+    }
+    /** ForgotPasswordRequest */
+    ForgotPasswordRequest: {
+      /**
+       * Email
+       * Format: email
+       */
+      email: string
     }
     /** GraphBase */
     GraphBase: {
@@ -162,10 +239,46 @@ export type components = {
       /** User Id */
       user_id: number
     }
+    /** GraphUpdate */
+    GraphUpdate: {
+      /** Title */
+      title?: string | null
+      /** Chart Type */
+      chart_type?: string | null
+      /** Upload Id */
+      upload_id?: number | null
+      /** X Axis */
+      x_axis?: string | null
+      /** Y Axis */
+      y_axis?: string[] | null
+      /** Aggregation Func */
+      aggregation_func?: string | null
+      /** Limit */
+      limit?: number | null
+    }
     /** HTTPValidationError */
     HTTPValidationError: {
       /** Detail */
       detail?: components['schemas']['ValidationError'][]
+    }
+    /** ResetPasswordRequest */
+    ResetPasswordRequest: {
+      /** Token */
+      token: string
+      /** New Password */
+      new_password: string
+      /** New Password Confirm */
+      new_password_confirm: string
+    }
+    /** TokenResponse */
+    TokenResponse: {
+      /** Access Token */
+      access_token: string
+      /**
+       * Token Type
+       * @default bearer
+       */
+      token_type: string
     }
     /** UploadDeleteResponse */
     UploadDeleteResponse: {
@@ -188,6 +301,53 @@ export type components = {
       user_id: number
       /** Created At */
       created_at: string | null
+    }
+    /** UserLogin */
+    UserLogin: {
+      /** Identifier */
+      identifier: string
+      /** Password */
+      password: string
+      /**
+       * Remember Me
+       * @default false
+       */
+      remember_me: boolean
+    }
+    /** UserRegister */
+    UserRegister: {
+      /** Login */
+      login: string
+      /** Password */
+      password: string
+      /** Password Confirm */
+      password_confirm: string
+      /**
+       * Email
+       * Format: email
+       */
+      email: string
+      /** Phone Num */
+      phone_num?: string | null
+    }
+    /** UserResponse */
+    UserResponse: {
+      /** Id */
+      id: number
+      /** Login */
+      login: string
+      /**
+       * Email
+       * Format: email
+       */
+      email: string
+      /** Phone Num */
+      phone_num?: string | null
+      /**
+       * Role
+       * @default user
+       */
+      role: string
     }
     /** ValidationError */
     ValidationError: {
@@ -419,6 +579,173 @@ export type operations = {
         }
         content: {
           'application/json': components['schemas']['GraphDeleteResponse']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_graph_api_graphs__graph_id__patch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        graph_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GraphUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GraphResponse']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  login_api_auth_login_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UserLogin']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TokenResponse']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  register_api_auth_register_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UserRegister']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UserResponse']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  forgot_password_api_auth_forgot_password_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ForgotPasswordRequest']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reset_password_api_auth_reset_password_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ResetPasswordRequest']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
         }
       }
       /** @description Validation Error */

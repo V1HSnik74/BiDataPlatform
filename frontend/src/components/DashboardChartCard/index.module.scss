@@ -1,0 +1,97 @@
+@use '../../styles/vars' as *;
+
+.chartCard {
+  background-color: $surfaceColor;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $radiusCard;
+  padding: 1.25rem 1.5rem 1.5rem;
+  box-shadow: $defaultShadow;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: $mediumTextWeight;
+  color: $defaultTextColor;
+}
+
+.menuContainer {
+  position: relative;
+}
+
+.dotsBtn {
+  background: none;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: $defaultRadius;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $subtextColor;
+  cursor: pointer;
+  transition:
+    background-color $defaultTransition,
+    color $defaultTransition;
+
+  &:hover {
+    background-color: $hoverBackgroundColor;
+    color: $defaultTextColor;
+  }
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 150px;
+  background-color: $surfaceColor;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $radiusMedium;
+  box-shadow: $popoverShadow;
+  padding: 0.35rem;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownItem {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.825rem;
+  font-weight: $defaultTextWeight;
+  color: $secondaryTextColor;
+  border-radius: $defaultRadius;
+  cursor: pointer;
+  transition: background-color $defaultTransition;
+
+  &:hover {
+    background-color: $hoverBackgroundColor;
+  }
+}
+
+.dropdownItemDanger {
+  color: $dangerColor;
+
+  &:hover {
+    background-color: $dangerSoftColor;
+    color: $dangerDarkColor;
+  }
+}
+
+.cardBody {
+  width: 100%;
+  height: 320px;
+}

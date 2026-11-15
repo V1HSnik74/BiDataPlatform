@@ -1,5 +1,5 @@
 import { FormField } from '../FormField'
-import styles from './index.module.scss'
+import css from './index.module.scss'
 
 export const AxisSlot = ({
   label,
@@ -14,11 +14,11 @@ export const AxisSlot = ({
 }) => {
   return (
     <FormField label={label}>
-      <div className={styles.dropSlot}>
+      <div className={css.dropSlot}>
         {value ? (
-          <span className={badgeVariant === 'dimension' ? styles.dimensionBadge : styles.measureBadge}>{value}</span>
+          <span className={badgeVariant === 'dimension' ? css.dimensionBadge : css.measureBadge}>{value}</span>
         ) : (
-          <span className={styles.placeholderText}>{placeholder}</span>
+          <span className={css.placeholderText}>{placeholder}</span>
         )}
       </div>
     </FormField>
