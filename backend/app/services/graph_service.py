@@ -6,32 +6,52 @@ import numpy as np
 import pandas as pd
 from fastapi import HTTPException
 
-from app.models.models import Upload, Graph
+from app.models.models import Upload, Graph, User
 from app.repository.graphRepository import GraphRepository
 from app.repository.uploadRepository import UploadRepository
-from app.schemas.graph import GraphBase
+from app.repository.userRepository import UserRepository
+from app.schemas.graph import GraphBase, GraphUpdate
 from app.services.file_parser import file_parser, FileParserError
 
 
 class GraphService:
-    def __init__(self, graph_repo: GraphRepository, upload_repo: UploadRepository):
+    def __init__(self, graph_repo: GraphRepository, upload_repo: UploadRepository, user_repo: UserRepository):
         self.graph_repo = graph_repo
         self.upload_repo = upload_repo
+        self.user_repo = user_repo
 
-    def _get_upload(self, upload_id: int, curr_user_id: int) -> Upload:
+    def _get_user(self, user_id: int) -> User:
+        user = self.user_repo.get(user_id)
+        if not user:
+            raise HTTPException(
+                status_code=404,
+                detail="Пользователь не найден"
+            )
+        return user
+
+    def _has_upload_access(self, user: User, upload: Upload) -> bool:
+        if user.role == "admin" or user.scope == "all":
+            return True
+        if user.scope == "department" and user.department == upload.department and user.department:
+            return True
+        if upload.user_id == user.id:
+            return True
+        return False
+
+    def _get_upload(self, upload_id: int, user: User) -> Upload:
         upload = self.upload_repo.get(upload_id)
         if not upload:
             raise HTTPException(status_code=404, detail="Файл не найден")
-        if upload.user_id != curr_user_id:
+        if not self._has_upload_access(user, upload):
             raise HTTPException(status_code=403, detail="Нет доступа к этому файлу")
         if not os.path.exists(upload.filepath):
             raise HTTPException(status_code=404, detail="Файл не доступен")
         return upload
 
     def preview_graph(self, graph: GraphBase, curr_user_id: int):
-        upload = self._get_upload(graph.upload_id, curr_user_id)
+        user = self._get_user(curr_user_id)
+        upload = self._get_upload(graph.upload_id, user)
         path = Path(upload.filepath)
-        ext = path.suffix.lower()
         try:
             df = file_parser.load_df(path)
         except FileParserError as e:
@@ -40,7 +60,8 @@ class GraphService:
                                     graph.limit)
 
     def create_graph(self, graph: GraphBase, user_id: int) -> Graph:
-        self._get_upload(graph.upload_id, user_id)
+        user = self._get_user(user_id)
+        self._get_upload(graph.upload_id, user)
         return self.graph_repo.create(
             title = graph.title,
             chart_type = graph.chart_type,
@@ -51,6 +72,16 @@ class GraphService:
             aggregation_func = graph.aggregation_func or None,
             limit = graph.limit or 10
         )
+
+    def update_graph(self, graph_upd: GraphUpdate, user_id: int, graph_id: int) -> Graph:
+        user = self._get_user(user_id)
+        graph = self.graph_repo.get(graph_id)
+        if not graph:
+            raise HTTPException(status_code=404, detail="График не найден")
+        if graph.user_id != user_id and user.role != "admin":
+            raise HTTPException(status_code=403, detail="Нет прав на редактирование этого графика")
+        update_data = graph_upd.model_dump(exclude_unset=True)
+        return self.graph_repo.update(db_obj=graph, **update_data)
 
     def _aggregate_data(
             self,
@@ -100,12 +131,14 @@ class GraphService:
         return {"labels": labels, "datasets": datasets}
 
     def get_user_graphs(self, user_id: int) -> List[Graph]:
-        return self.graph_repo.get_graphs_by_user_id(user_id)
+        user = self._get_user(user_id)
+        return self.graph_repo.get_available_graphs(user)
 
     def delete_graph(self, graph_id: int, user_id: int):
+        user = self._get_user(user_id)
         graph = self.graph_repo.get(graph_id)
         if not graph:
             raise HTTPException(status_code=404, detail="График не найден")
-        if graph.user_id != user_id:
+        if graph.user_id != user_id and user.role != "admin":
             raise HTTPException(status_code=403, detail="Нет доступа к удалению этого объекта")
         self.graph_repo.delete(graph_id)

@@ -5,13 +5,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
 class Settings(BaseSettings):
     POSTGRES_USER: str = 'postgres'
-    POSTGRES_PASSWORD: str
+    POSTGRES_PASSWORD: str = ""
     POSTGRES_SERVER: str = 'localhost'
     POSTGRES_PORT: int = 5433
-    SECRET_KEY: str
+    SECRET_KEY: str = ""
     POSTGRES_DB: str = 'bi_db'
     ALGORITHM: str = 'HS256'
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 465
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
 
     @property
     def db_url(self) -> str:
