@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { useMemo, useState } from 'react'
+import toast from 'react-hot-toast'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { DEFAULT_CHART_CONFIG, type ChartConfig } from '../../api/charts'
 import { graphsApi } from '../../api/graphs'
@@ -13,8 +14,10 @@ import { FieldBadgeSection } from '../../components/FieldBadgeSection'
 import { FileLabel } from '../../components/FileLabel'
 import { FormField } from '../../components/FormField'
 import { Icon } from '../../components/Icon'
+import { withPageWrapper } from '../../components/PageWrapper'
 import { useDebounce } from '../../hooks/useDebounce'
 import { ROUTES } from '../../lib/routes'
+import { handleApiError } from '../../utils/errors'
 import styles from './index.module.scss'
 
 const CHART_TYPES = [
@@ -39,7 +42,18 @@ type LocationState = {
   initialConfig?: ChartConfig
 } | null
 
-export const ChartBuilder = () => {
+export const ChartBuilder = withPageWrapper({
+  authorizedOnly: true,
+  title: 'Конструктор графиков',
+  useQuery: () =>
+    useQuery({
+      queryKey: ['user-uploads'],
+      queryFn: () => uploadApi.getUploads(),
+    }),
+  setProps: ({ queryResult }) => ({
+    userFiles: queryResult.data,
+  }),
+})(({ userFiles }) => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const location = useLocation()
@@ -47,11 +61,6 @@ export const ChartBuilder = () => {
   const editingChartId = editState?.chartId ?? null
   const [config, setConfig] = useState<ChartConfig>(() => editState?.initialConfig ?? DEFAULT_CHART_CONFIG)
   const debouncedTopN = useDebounce(config.topN, 300)
-
-  const { data: userFiles = [] } = useQuery({
-    queryKey: ['user-uploads'],
-    queryFn: () => uploadApi.getUploads(),
-  })
 
   const currentFileId = config.fileId ?? userFiles[0]?.id ?? null
   const activeFile = userFiles.find((f) => f.id === currentFileId)
@@ -104,8 +113,12 @@ export const ChartBuilder = () => {
       return editingChartId ? graphsApi.updateGraph(editingChartId, payload) : graphsApi.createGraph(payload)
     },
     onSuccess: () => {
+      toast.success(editingChartId ? 'График обновлён' : 'График добавлен на дашборд')
       queryClient.invalidateQueries({ queryKey: ['dashboard-graphs'] })
       navigate(ROUTES.DASHBOARDS)
+    },
+    onError: (error) => {
+      handleApiError(error, 'Не удалось сохранить график')
     },
   })
 
@@ -234,4 +247,4 @@ export const ChartBuilder = () => {
       </div>
     </div>
   )
-}
+})

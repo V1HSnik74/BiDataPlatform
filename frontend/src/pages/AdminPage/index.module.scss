@@ -1,0 +1,250 @@
+@use '../../styles/vars' as *;
+
+.adminLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.headerBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pageTitle {
+  margin: 0;
+  font-family: $defaultFontFamily;
+  font-size: 24px;
+  font-weight: 600;
+  color: $defaultTextColor;
+}
+
+.breadcrumbs {
+  font-family: $defaultFontFamily;
+  font-size: 13px;
+  color: $subtextColor;
+}
+
+.tabsBar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid $defaultBorderColor;
+}
+
+.tabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 4px 12px;
+  margin-bottom: -1px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: $defaultFontFamily;
+  font-size: 14px;
+  font-weight: 600;
+  color: $subtextColor;
+  cursor: pointer;
+  transition:
+    color $defaultTransition,
+    border-color $defaultTransition;
+
+  &:hover {
+    color: $defaultTextColor;
+  }
+}
+
+.tabBtnActive {
+  color: $defaultTextColor;
+  border-bottom-color: $defaultTextColor;
+}
+
+.card {
+  background-color: $surfaceColor;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $defaultRadius;
+  box-shadow: $popoverShadow;
+  overflow: visible;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-family: $defaultFontFamily;
+  font-size: 13.5px;
+
+  th {
+    padding: 15px 20px;
+    background-color: #fafbfc;
+    color: $subtextColor;
+    font-weight: 500;
+    border-bottom: 1px solid $defaultBorderColor;
+    border-radius: 20px;
+  }
+
+  td {
+    padding: 14px 20px;
+    border-bottom: 1px solid $defaultBorderColor;
+    color: $defaultTextColor;
+    vertical-align: middle;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: $radiusRound;
+  background-color: #e0e7ff;
+  color: $primaryColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.userName {
+  font-weight: 500;
+  color: $defaultTextColor;
+}
+
+.emailCell {
+  color: $secondaryTextColor;
+}
+
+.badgeAdmin {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background-color: #fee2e2;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badgeUser {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badgeScope {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background-color: #e0e7ff;
+  color: #3730a3;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.actionsCell {
+  position: relative;
+  text-align: right;
+}
+
+.menuBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: $subtextColor;
+  padding: 6px;
+  border-radius: $defaultRadius;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color $defaultTransition,
+    color $defaultTransition;
+
+  &:hover {
+    background-color: $hoverBackgroundColor;
+    color: $defaultTextColor;
+  }
+}
+
+.dropdownMenu {
+  position: absolute;
+  right: 20px;
+  top: 45px;
+  background-color: $surfaceColor;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $defaultRadius;
+  box-shadow: $popoverShadow;
+  z-index: 10;
+  min-width: 130px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  color: $defaultTextColor;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color $defaultTransition;
+
+  &:hover {
+    background-color: $hoverBackgroundColor;
+  }
+}
+
+.dangerItem {
+  color: $dangerColor;
+
+  &:hover {
+    background-color: #fee2e2;
+  }
+}
+
+.badgeDept {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background-color: #ecfdf5;
+  color: #047857;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badgeUnassigned {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background-color: #f3f4f6;
+  color: $subtextColor;
+  font-size: 12px;
+  font-weight: 400;
+}

@@ -1,0 +1,381 @@
+@use '../../styles/vars' as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.modal {
+  background-color: $surfaceColor;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  animation: modalAppear 0.2s ease-out;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modalHeader {
+  padding: 20px 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid $defaultBorderColor;
+}
+
+.title {
+  margin: 0 0 4px 0;
+  font-family: $defaultFontFamily;
+  font-size: 18px;
+  font-weight: 600;
+  color: $defaultTextColor;
+}
+
+.subtitle {
+  font-family: $defaultFontFamily;
+  font-size: 13px;
+  color: $subtextColor;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: $subtextColor;
+  padding: 4px;
+  border-radius: 4px;
+  transition:
+    background-color $defaultTransition,
+    color $defaultTransition;
+
+  &:hover {
+    background-color: $hoverBackgroundColor;
+    color: $defaultTextColor;
+  }
+}
+
+.modalBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-family: $defaultFontFamily;
+  font-size: 13px;
+  font-weight: 600;
+  color: $defaultTextColor;
+}
+
+.select {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $defaultRadius;
+  background-color: $surfaceColor;
+  font-family: $defaultFontFamily;
+  font-size: 13.5px;
+  color: $defaultTextColor;
+  outline: none;
+  cursor: pointer;
+  transition: border-color $defaultTransition;
+
+  &:focus {
+    border-color: $primaryColor;
+  }
+}
+
+.radioList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.radioLabel,
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: $defaultFontFamily;
+  font-size: 13.5px;
+  color: $defaultTextColor;
+  cursor: pointer;
+
+  input[type='radio'] {
+    cursor: pointer;
+    accent-color: $primaryColor;
+  }
+}
+
+.subOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 24px;
+  margin-top: 2px;
+}
+
+.warningBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: #fefce8;
+  border: 1px solid #fef08a;
+  border-radius: $defaultRadius;
+  color: #854d0e;
+}
+
+.warningIcon {
+  color: #ca8a04;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.warningText {
+  font-family: $defaultFontFamily;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.modalFooter {
+  padding: 16px 24px;
+  background-color: $hoverBackgroundColor;
+  border-top: 1px solid $defaultBorderColor;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.secondaryBtn {
+  height: 36px;
+  padding: 0 16px;
+  background-color: $surfaceColor;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $defaultRadius;
+  font-family: $defaultFontFamily;
+  font-size: 13px;
+  font-weight: 500;
+  color: $defaultTextColor;
+  cursor: pointer;
+  transition: background-color $defaultTransition;
+
+  &:hover {
+    background-color: $hoverBackgroundColor;
+  }
+}
+
+.primaryBtn {
+  height: 36px;
+  padding: 0 16px;
+  background-color: $primaryColor;
+  border: none;
+  border-radius: $defaultRadius;
+  font-family: $defaultFontFamily;
+  font-size: 13px;
+  font-weight: 500;
+  color: $inverseTextColor;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color $defaultTransition;
+
+  &:hover:not(:disabled) {
+    background-color: $primaryHoverColor;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.spinner {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.addDeptTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 4px 0;
+  background: transparent;
+  border: none;
+  font-family: $defaultFontFamily;
+  font-size: 13px;
+  font-weight: 500;
+  color: $primaryColor;
+  cursor: pointer;
+  width: fit-content;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.addDeptRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.deptInput {
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $defaultRadius;
+  font-family: $defaultFontFamily;
+  font-size: 13px;
+  color: $defaultTextColor;
+  outline: none;
+
+  &:focus {
+    border-color: $primaryColor;
+  }
+}
+
+.addDeptConfirmBtn {
+  height: 32px;
+  padding: 0 12px;
+  background-color: $primaryColor;
+  color: $inverseTextColor;
+  border: none;
+  border-radius: $defaultRadius;
+  font-family: $defaultFontFamily;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $primaryHoverColor;
+  }
+}
+
+.addOptionLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: $primaryColor;
+  font-weight: 500;
+}
+
+.addDeptRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.deptInput {
+  flex: 1;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $defaultRadius;
+  font-family: $defaultFontFamily;
+  font-size: 13px;
+  color: $defaultTextColor;
+  outline: none;
+
+  &:focus {
+    border-color: $primaryColor;
+  }
+}
+
+.addDeptConfirmBtn {
+  height: 34px;
+  padding: 0 12px;
+  background-color: $primaryColor;
+  color: $inverseTextColor;
+  border: none;
+  border-radius: $defaultRadius;
+  font-family: $defaultFontFamily;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $primaryHoverColor;
+  }
+}
+
+.addDeptCancelBtn {
+  height: 34px;
+  padding: 0 10px;
+  background-color: $surfaceColor;
+  color: $subtextColor;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $defaultRadius;
+  font-family: $defaultFontFamily;
+  font-size: 12.5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $hoverBackgroundColor;
+    color: $defaultTextColor;
+  }
+}
+
+.addOptionBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  border-radius: $defaultRadius;
+  font-family: $defaultFontFamily;
+  font-size: 13px;
+  font-weight: 500;
+  color: $primaryColor;
+  cursor: pointer;
+  text-align: left;
+
+  &:hover {
+    background-color: $hoverBackgroundColor;
+  }
+}

@@ -14,6 +14,7 @@ type CustomSelectProps<T extends string | number> = {
   onChange: (value: T) => void
   placeholder?: string
   icon?: ReactNode
+  footer?: ReactNode
   className?: string
 }
 
@@ -23,6 +24,7 @@ export const CustomSelect = <T extends string | number>({
   onChange,
   placeholder = 'Выберите...',
   icon,
+  footer,
   className,
 }: CustomSelectProps<T>) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -54,7 +56,7 @@ export const CustomSelect = <T extends string | number>({
 
       {isOpen && (
         <ul className={css.optionsList}>
-          {options.length === 0 ? (
+          {options.length === 0 && !footer ? (
             <li className={css.emptyOption}>Нет доступных вариантов</li>
           ) : (
             options.map((opt) => (
@@ -73,6 +75,11 @@ export const CustomSelect = <T extends string | number>({
                 </button>
               </li>
             ))
+          )}
+          {footer && (
+            <li className={css.footerItem} onClick={() => setIsOpen(false)}>
+              {footer}
+            </li>
           )}
         </ul>
       )}

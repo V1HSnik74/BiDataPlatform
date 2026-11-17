@@ -1,8 +1,9 @@
-import { Toaster } from 'react-hot-toast'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { AppToaster } from './components/AppToaster'
 import { Layout } from './components/Layout'
 import { QueryProvider } from './lib/QueryProvider'
 import { ROUTES } from './lib/routes'
+import { AdminPage } from './pages/AdminPage'
 import { ChartBuilder } from './pages/ChartBuilderPage'
 import { Dashboard } from './pages/DashboardPage'
 import { DataSourcePage } from './pages/DataSourcePage'
@@ -13,12 +14,7 @@ import { RegisterPage } from './pages/RegisterPage'
 export const App = () => {
   return (
     <QueryProvider>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-        }}
-      />
+      <AppToaster />
       <BrowserRouter>
         <Routes>
           <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
@@ -28,6 +24,7 @@ export const App = () => {
             <Route path={ROUTES.SOURCES} element={<DataSourcePage />} />
             <Route path={ROUTES.NEWCHART} element={<ChartBuilder />} />
             <Route path={ROUTES.DASHBOARDS} element={<Dashboard />} />
+            <Route path={ROUTES.ADMIN} element={<AdminPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

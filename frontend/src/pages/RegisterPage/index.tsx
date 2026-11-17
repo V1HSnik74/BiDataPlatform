@@ -33,10 +33,7 @@ export const RegisterPage = () => {
     validationSchema: registerSchema,
     successMessage: 'Аккаунт успешно создан! Теперь войдите в систему.',
     onSubmit: async ({ value }) => {
-      await authApi.register({
-        ...value,
-        phone_num: '3',
-      })
+      await authApi.register(value)
       navigate(ROUTES.REGISTER)
     },
   })

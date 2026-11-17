@@ -23,5 +23,15 @@ export type TokenResponse = components['schemas']['TokenResponse']
 export type ForgotPasswordRequest = components['schemas']['ForgotPasswordRequest']
 export type ResetPasswordRequest = components['schemas']['ResetPasswordRequest']
 
+// Admin
+export type UsersResponse = components['schemas']['UsersResponse']
+export type UserUpdatePermission = components['schemas']['UserUpdatePermission']
+export type UserDeleteResponse = components['schemas']['UserDeleteResponse']
+export type UserRole = UsersResponse['role']
+export type UserScope = UsersResponse['scope']
+export type DeleteUserPathParams = operations['delete_user_api_admin__user_id__delete']['parameters']['path']
+export type UpdateUserPermissionsPathParams =
+  operations['update_user_permissions_api_admin__user_id__patch']['parameters']['path']
+
 // Other
 export type FileType = 'csv' | 'xlsx' | 'json' | 'xml'

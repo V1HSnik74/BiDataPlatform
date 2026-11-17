@@ -1,4 +1,5 @@
 import axios from 'axios'
+import toast from 'react-hot-toast'
 
 type FastAPIErrorPayload = {
   detail?: string | Array<{ msg: string; loc?: (string | number)[] }>
@@ -24,5 +25,5 @@ const getApiErrorMessage = (error: unknown, fallbackMessage = 'Произошл�
 export const handleApiError = (error: unknown, fallbackMessage = 'Ошибка при выполнении операции') => {
   const message = getApiErrorMessage(error, fallbackMessage)
   console.error(error)
-  alert(message)
+  toast.error(message)
 }

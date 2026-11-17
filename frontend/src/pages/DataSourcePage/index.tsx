@@ -1,10 +1,11 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import classNames from 'classnames'
-import { useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import type { UploadResponse } from '../../api/types'
+import toast from 'react-hot-toast'
 import { uploadApi } from '../../api/uploads'
 import { FileLabel } from '../../components/FileLabel'
 import { Icon } from '../../components/Icon'
+import { withPageWrapper } from '../../components/PageWrapper'
 import { handleApiError } from '../../utils/errors'
 import css from './index.module.scss'
 
@@ -19,46 +20,41 @@ const formatDate = (dateStr: string | null) => {
   })
 }
 
-export const DataSourcePage = () => {
-  const [files, setFiles] = useState<UploadResponse[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
+export const DataSourcePage = withPageWrapper({
+  authorizedOnly: true,
+  title: 'Источники данных',
+  useQuery: () =>
+    useQuery({
+      queryKey: ['uploads'],
+      queryFn: () => uploadApi.getUploads(),
+    }),
+  setProps: ({ queryResult }) => ({
+    files: queryResult.data,
+  }),
+})(({ files }) => {
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    const fetchFiles = async () => {
-      try {
-        setIsLoading(true)
-        const data = await uploadApi.getUploads()
-        setFiles(data)
-      } catch (error) {
-        handleApiError(error, 'Не удалось получить список файлов')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    fetchFiles()
-  }, [])
-
-  const handleAcceptedFile = async (file: File) => {
-    try {
-      setIsUploading(true)
-      const uploadedRecord = await uploadApi.uploadFile(file)
-      setFiles((prev) => [uploadedRecord, ...prev])
-    } catch (error) {
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => uploadApi.uploadFile(file),
+    onSuccess: () => {
+      toast.success('Файл успешно загружен')
+      queryClient.invalidateQueries({ queryKey: ['uploads'] })
+    },
+    onError: (error) => {
       handleApiError(error, 'Ошибка при загрузке файла')
-    } finally {
-      setIsUploading(false)
-    }
-  }
+    },
+  })
 
-  const handleDelete = async (id: number) => {
-    try {
-      await uploadApi.deleteUpload(id)
-      setFiles((prev) => prev.filter((file) => file.id !== id))
-    } catch (error) {
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => uploadApi.deleteUpload(id),
+    onSuccess: () => {
+      toast.success('Файл удалён')
+      queryClient.invalidateQueries({ queryKey: ['uploads'] })
+    },
+    onError: (error) => {
       handleApiError(error, 'Не удалось удалить файл')
-    }
-  }
+    },
+  })
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     noClick: true,
@@ -73,13 +69,15 @@ export const DataSourcePage = () => {
     },
     onDropAccepted: (acceptedFiles) => {
       if (acceptedFiles[0]) {
-        handleAcceptedFile(acceptedFiles[0])
+        uploadMutation.mutate(acceptedFiles[0])
       }
     },
     onDropRejected: (fileRejections) => {
-      alert(`Upload error: ${fileRejections[0]?.errors[0]?.message}`)
+      toast.error(`Ошибка загрузки: ${fileRejections[0]?.errors[0]?.message}`)
     },
   })
+
+  const isUploading = uploadMutation.isPending
 
   return (
     <div className={css.container}>
@@ -102,7 +100,6 @@ export const DataSourcePage = () => {
               Upload File
             </button>
           </div>
-
           <div className={css.tableResponsive}>
             <table className={css.table}>
               <thead>
@@ -115,13 +112,7 @@ export const DataSourcePage = () => {
                 </tr>
               </thead>
               <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={5} style={{ textAlign: 'center', padding: '24px' }}>
-                      Loading data sources...
-                    </td>
-                  </tr>
-                ) : files.length === 0 ? (
+                {files.length === 0 ? (
                   <tr>
                     <td colSpan={5} style={{ textAlign: 'center', padding: '24px' }}>
                       No files uploaded yet. Upload a CSV, XLSX, JSON or XML file to get started.
@@ -154,7 +145,11 @@ export const DataSourcePage = () => {
                       </td>
                       <td className={css.tdActions}>
                         <div className={css.actionsContainer}>
-                          <button type="button" className={css.deleteButton} onClick={() => handleDelete(file.id)}>
+                          <button
+                            type="button"
+                            className={css.deleteButton}
+                            onClick={() => deleteMutation.mutate(file.id)}
+                          >
                             <Icon name="trash" size={16} />
                             <span>Delete</span>
                           </button>
@@ -170,4 +165,4 @@ export const DataSourcePage = () => {
       </main>
     </div>
   )
-}
+})

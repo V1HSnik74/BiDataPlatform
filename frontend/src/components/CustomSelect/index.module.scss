@@ -116,3 +116,9 @@
   color: $placeholderColor;
   text-align: center;
 }
+
+.footer {
+  border-top: 1px solid $defaultBorderColor;
+  padding-top: 4px;
+  margin-top: 4px;
+}

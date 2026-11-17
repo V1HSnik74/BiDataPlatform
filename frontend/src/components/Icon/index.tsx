@@ -22,6 +22,12 @@ import {
   LogOut,
   CheckCircle2,
   Mail,
+  X,
+  AlertTriangle,
+  Plus,
+  Edit3,
+  ShieldAlert,
+  Users,
 } from 'lucide-react'
 
 const icons = {
@@ -47,6 +53,12 @@ const icons = {
   logout: LogOut,
   done: CheckCircle2,
   mail: Mail,
+  close: X,
+  alert: AlertTriangle,
+  add: Plus,
+  edit: Edit3,
+  shield: ShieldAlert,
+  users: Users,
 } as const
 
 export const Icon = ({ name, size = 18, ...restProps }: { name: keyof typeof icons } & LucideProps) => {
