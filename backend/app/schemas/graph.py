@@ -10,6 +10,7 @@ class GraphBase(BaseModel):
     y_axis: List[str]
     aggregation_func: Optional[str]
     limit: Optional[int]
+    constraints: Optional[dict]
 
 class GraphResponse(GraphBase):
     id: int
@@ -28,3 +29,4 @@ class GraphUpdate(BaseModel):
     y_axis: Optional[List[str]] = None
     aggregation_func: Optional[str] = None
     limit: Optional[int] = None
+    constraints: Optional[dict]

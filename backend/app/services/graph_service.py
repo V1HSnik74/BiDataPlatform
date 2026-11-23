@@ -7,6 +7,7 @@ import pandas as pd
 from fastapi import HTTPException
 
 from app.models.models import Upload, Graph, User
+from app.repository.CustomChartTypeRepository import CustomChartTypeRepository
 from app.repository.graphRepository import GraphRepository
 from app.repository.uploadRepository import UploadRepository
 from app.repository.userRepository import UserRepository
@@ -15,10 +16,12 @@ from app.services.file_parser import file_parser, FileParserError
 
 
 class GraphService:
-    def __init__(self, graph_repo: GraphRepository, upload_repo: UploadRepository, user_repo: UserRepository):
+    def __init__(self, graph_repo: GraphRepository, upload_repo: UploadRepository, user_repo: UserRepository,
+                 chart_type_repo: CustomChartTypeRepository):
         self.graph_repo = graph_repo
         self.upload_repo = upload_repo
         self.user_repo = user_repo
+        self.chart_type_repo = chart_type_repo
 
     def _get_user(self, user_id: int) -> User:
         user = self.user_repo.get(user_id)
@@ -62,6 +65,11 @@ class GraphService:
     def create_graph(self, graph: GraphBase, user_id: int) -> Graph:
         user = self._get_user(user_id)
         self._get_upload(graph.upload_id, user)
+        chart_type_id = graph.chart_type
+        if chart_type_id not in ["bar", "scatter", "pie"]:
+            chart_type_obj =  self.chart_type_repo.get(int(chart_type_id))
+            if not chart_type_obj or chart_type_obj.user_id != user_id:
+                raise HTTPException(status_code=404, detail="Тип графика не найден")
         return self.graph_repo.create(
             title = graph.title,
             chart_type = graph.chart_type,
@@ -70,7 +78,8 @@ class GraphService:
             x_axis = graph.x_axis,
             y_axis = graph.y_axis,
             aggregation_func = graph.aggregation_func or None,
-            limit = graph.limit or 10
+            limit = graph.limit or 10,
+            constraints = graph.constraints
         )
 
     def update_graph(self, graph_upd: GraphUpdate, user_id: int, graph_id: int) -> Graph:
@@ -81,6 +90,11 @@ class GraphService:
         if graph.user_id != user_id and user.role != "admin":
             raise HTTPException(status_code=403, detail="Нет прав на редактирование этого графика")
         update_data = graph_upd.model_dump(exclude_unset=True)
+        chart_type_id = update_data.get("chart_type")
+        if chart_type_id and chart_type_id not in ["bar", "scatter", "pie"]:
+            chart_type_obj = self.chart_type_repo.get(int(chart_type_id))
+            if not chart_type_obj or chart_type_obj.user_id != user_id:
+                raise HTTPException(status_code=404, detail="Тип графика не найден")
         return self.graph_repo.update(db_obj=graph, **update_data)
 
     def _aggregate_data(
