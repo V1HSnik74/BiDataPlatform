@@ -1,0 +1,18 @@
+@use '../../../styles/vars' as *;
+
+.chartWrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.stateBox {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $subtextColor;
+  font-size: 14px;
+  text-align: center;
+  padding: 24px;
+}

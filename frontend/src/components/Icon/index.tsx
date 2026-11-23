@@ -28,6 +28,9 @@ import {
   Edit3,
   ShieldAlert,
   Users,
+  TrendingUp,
+  AreaChart,
+  Radar,
 } from 'lucide-react'
 
 const icons = {
@@ -59,6 +62,9 @@ const icons = {
   edit: Edit3,
   shield: ShieldAlert,
   users: Users,
+  lineChart: TrendingUp,
+  areaChart: AreaChart,
+  radarChart: Radar,
 } as const
 
 export const Icon = ({ name, size = 18, ...restProps }: { name: keyof typeof icons } & LucideProps) => {

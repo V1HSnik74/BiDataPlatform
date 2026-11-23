@@ -3,28 +3,29 @@ import classNames from 'classnames'
 import { useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { DEFAULT_CHART_CONFIG, type ChartConfig } from '../../api/charts'
+import { DEFAULT_CHART_CONFIG, type ChartConfig, type CustomChartBlueprint } from '../../api/charts'
 import { graphsApi } from '../../api/graphs'
 import type { GraphBase } from '../../api/types'
 import { uploadApi } from '../../api/uploads'
 import { AxisSlot } from '../../components/AxisSlot'
-import { ChartRenderer } from '../../components/ChartRender'
+import { ChartConstraintsSection } from '../../components/ChartConstraintsSection'
+import { CustomChartModal } from '../../components/CustomChartModal'
 import { CustomSelect, type SelectOption } from '../../components/CustomSelect'
 import { FieldBadgeSection } from '../../components/FieldBadgeSection'
 import { FileLabel } from '../../components/FileLabel'
 import { FormField } from '../../components/FormField'
 import { Icon } from '../../components/Icon'
 import { withPageWrapper } from '../../components/PageWrapper'
-import { useDebounce } from '../../hooks/useDebounce'
+import {
+  BUILTIN_CHART_LIST,
+  buildCustomChartDefinition,
+  ChartRenderer,
+  type ChartDefinition,
+  resolveChartDefinition,
+} from '../../components/charts'
 import { ROUTES } from '../../lib/routes'
 import { handleApiError } from '../../utils/errors'
 import styles from './index.module.scss'
-
-const CHART_TYPES = [
-  { type: 'bar', icon: 'barChart' },
-  { type: 'scatter', icon: 'scatterChart' },
-  { type: 'pie', icon: 'pieChart' },
-] as const
 
 const AGGREGATION_OPTIONS: SelectOption<ChartConfig['aggregation']>[] = [
   { value: 'SUM', label: 'СУММА' },
@@ -60,15 +61,24 @@ export const ChartBuilder = withPageWrapper({
   const editState = location.state as LocationState
   const editingChartId = editState?.chartId ?? null
   const [config, setConfig] = useState<ChartConfig>(() => editState?.initialConfig ?? DEFAULT_CHART_CONFIG)
-  const debouncedTopN = useDebounce(config.topN, 300)
+  const [customBlueprints, setCustomBlueprints] = useState<CustomChartBlueprint[]>([])
+  const [isCustomModalOpen, setIsCustomModalOpen] = useState(false)
 
+  const customDefinitions = useMemo(() => {
+    const map: Record<string, ChartDefinition> = {}
+    for (const bp of customBlueprints) {
+      map[bp.id] = buildCustomChartDefinition(bp)
+    }
+    return map
+  }, [customBlueprints])
+
+  const activeDefinition = resolveChartDefinition(config.type, customDefinitions)
   const currentFileId = config.fileId ?? userFiles[0]?.id ?? null
   const activeFile = userFiles.find((f) => f.id === currentFileId)
 
   const updateConfig = <T extends keyof ChartConfig>(key: T, value: ChartConfig[T]) => {
     setConfig((prev) => ({ ...prev, fileId: currentFileId, [key]: value }))
   }
-
   const handleSelectFile = (fileId: number) => {
     setConfig((prev) => ({ ...prev, fileId, xAxis: '', yAxis: '' }))
   }
@@ -82,8 +92,10 @@ export const ChartBuilder = withPageWrapper({
     [userFiles]
   )
 
+  const MAX_TOP_N = 50
+
   const { data: rawChartData, isLoading } = useQuery({
-    queryKey: ['chart-preview', currentFileId, config.xAxis, config.yAxis, config.aggregation, debouncedTopN],
+    queryKey: ['chart-preview', currentFileId, config.xAxis, config.yAxis, config.aggregation],
     queryFn: () =>
       graphsApi.previewGraph({
         title: config.title || 'Безымянный график',
@@ -92,11 +104,19 @@ export const ChartBuilder = withPageWrapper({
         x_axis: config.xAxis,
         y_axis: [config.yAxis],
         aggregation_func: config.aggregation,
-        limit: debouncedTopN,
+        limit: MAX_TOP_N,
       }),
     enabled: Boolean(currentFileId && config.xAxis && config.yAxis),
     staleTime: 1000 * 60 * 10,
   })
+
+  const totalAvailableItems = useMemo(() => {
+    const res = rawChartData as BackendChartResponse | undefined
+    return Array.isArray(res?.labels) ? res.labels.length : 0
+  }, [rawChartData])
+
+  const maxTopN = totalAvailableItems > 0 ? Math.min(MAX_TOP_N, totalAvailableItems) : MAX_TOP_N
+  const effectiveTopN = Math.min(config.topN, maxTopN)
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -107,9 +127,8 @@ export const ChartBuilder = withPageWrapper({
         x_axis: config.xAxis,
         y_axis: [config.yAxis],
         aggregation_func: config.aggregation,
-        limit: config.topN,
+        limit: effectiveTopN,
       }
-
       return editingChartId ? graphsApi.updateGraph(editingChartId, payload) : graphsApi.createGraph(payload)
     },
     onSuccess: () => {
@@ -132,11 +151,11 @@ export const ChartBuilder = withPageWrapper({
     if (!Array.isArray(labels) || !Array.isArray(values)) {
       return []
     }
-    return labels.slice(0, debouncedTopN).map((label, idx) => ({
+    return labels.slice(0, effectiveTopN).map((label, idx) => ({
       x: String(label),
       y: Number(values[idx] ?? 0),
     }))
-  }, [rawChartData, debouncedTopN])
+  }, [rawChartData, effectiveTopN])
 
   return (
     <div className={styles.builderLayout}>
@@ -196,7 +215,7 @@ export const ChartBuilder = withPageWrapper({
         <section className={styles.configSidebar}>
           <FormField label="Тип графика">
             <div className={styles.chartTypeGroup}>
-              {CHART_TYPES.map(({ type, icon }) => (
+              {BUILTIN_CHART_LIST.map(({ type, icon }) => (
                 <button
                   key={type}
                   type="button"
@@ -209,6 +228,43 @@ export const ChartBuilder = withPageWrapper({
                 </button>
               ))}
             </div>
+            <button type="button" className={styles.addTypeBtn} onClick={() => setIsCustomModalOpen(true)}>
+              + Свой тип графика
+            </button>
+            {customBlueprints.length > 0 && (
+              <div className={styles.customTypeList}>
+                {customBlueprints.map((bp) => (
+                  <div
+                    key={bp.id}
+                    className={classNames(styles.customTypeChip, {
+                      [styles.customTypeChipActive]: config.type === bp.id,
+                    })}
+                  >
+                    <button
+                      type="button"
+                      className={styles.customTypeSelectBtn}
+                      onClick={() => updateConfig('type', bp.id)}
+                    >
+                      <Icon name={bp.icon} size={14} />
+                      <span>{bp.name}</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.customTypeRemoveBtn}
+                      title="Удалить тип"
+                      onClick={() => {
+                        setCustomBlueprints((prev) => prev.filter((item) => item.id !== bp.id))
+                        if (config.type === bp.id) {
+                          updateConfig('type', 'bar')
+                        }
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </FormField>
           <AxisSlot
             label="Ось X (измерение)"
@@ -224,27 +280,53 @@ export const ChartBuilder = withPageWrapper({
               onChange={(val) => updateConfig('aggregation', val)}
             />
           </FormField>
-          <FormField label="Лимит Top-N">
+          <FormField label={totalAvailableItems > 0 ? `Лимит Top-N (макс. ${maxTopN})` : 'Лимит Top-N'}>
             <div className={styles.numberInputWrapper}>
               <input
                 type="number"
-                value={config.topN}
-                onChange={(e) => updateConfig('topN', Math.max(1, Number(e.target.value)))}
+                value={effectiveTopN}
+                onChange={(e) => {
+                  const next = Math.min(maxTopN, Math.max(1, Number(e.target.value) || 1))
+                  updateConfig('topN', next)
+                }}
                 className={styles.numberInput}
                 min={1}
-                max={50}
+                max={maxTopN}
               />
               <Icon name="chevronsUpDown" size={16} className={styles.stepperIcon} />
             </div>
           </FormField>
+          <ChartConstraintsSection
+            value={config.constraints}
+            supportsReferenceLine={activeDefinition.supportsThreshold}
+            onChange={(nextConstraints) => updateConfig('constraints', nextConstraints)}
+          />
         </section>
         <main className={styles.previewCard}>
           <h1 className={styles.chartTitle}>{config.title}</h1>
           <div className={styles.chartArea}>
-            <ChartRenderer data={chartData} config={{ ...config, fileId: currentFileId }} isLoading={isLoading} />
+            <ChartRenderer
+              data={chartData}
+              config={{ ...config, fileId: currentFileId }}
+              isLoading={isLoading}
+              customDefinitions={customDefinitions}
+            />
           </div>
         </main>
       </div>
+      <CustomChartModal
+        isOpen={isCustomModalOpen}
+        onClose={() => setIsCustomModalOpen(false)}
+        onCreate={(blueprint) => {
+          const created: CustomChartBlueprint = {
+            ...blueprint,
+            id: `custom_${Date.now()}`,
+          }
+          setCustomBlueprints((prev) => [...prev, created])
+          updateConfig('type', created.id)
+          toast.success(`Тип графика «${created.name}» добавлен`)
+        }}
+      />
     </div>
   )
 })

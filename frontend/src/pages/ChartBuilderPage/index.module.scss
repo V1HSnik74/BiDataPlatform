@@ -327,3 +327,103 @@
     justify-content: center;
   }
 }
+
+.sectionHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.addTypeBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: $defaultFontFamily;
+  font-size: 12px;
+  font-weight: 500;
+  color: $primaryColor;
+  cursor: pointer;
+  margin-top: 6px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.customTypeList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.customTypeChip,
+.customTypeChipActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid $defaultBorderColor;
+  background-color: #f8fafc;
+  font-size: 12px;
+}
+
+.customTypeSelectBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: $defaultFontFamily;
+  font-size: 12px;
+  font-weight: 500;
+  color: inherit;
+  cursor: pointer;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.customTypeRemoveBtn {
+  background: transparent;
+  border: none;
+  padding: 0 2px;
+  font-size: 11px;
+  color: $subtextColor;
+  cursor: pointer;
+
+  &:hover {
+    color: $dangerColor;
+  }
+}
+
+.customTypeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid $defaultBorderColor;
+  background-color: #f8fafc;
+  color: $defaultTextColor;
+  font-size: 12px;
+  transition: all $defaultTransition;
+
+  &:hover {
+    border-color: rgba($primaryColor, 0.4);
+  }
+}
+
+.customTypeChipActive {
+  border-color: $primaryColor;
+  background-color: rgba($primaryColor, 0.1);
+  color: $primaryColor;
+}

@@ -3,8 +3,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { mapGraphToConfig } from '../../api/charts'
 import { graphsApi } from '../../api/graphs'
 import type { GraphResponse } from '../../api/types'
-import { ChartRenderer } from '../ChartRender'
 import { Icon } from '../Icon'
+import { ChartRenderer } from '../charts/ChartRender'
 import css from './index.module.scss'
 
 type CardProps = {

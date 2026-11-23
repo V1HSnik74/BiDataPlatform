@@ -11,9 +11,9 @@ import css from './index.module.scss'
 
 const formatDate = (dateStr: string | null) => {
   if (!dateStr) {
-    return 'Unknown'
+    return 'Неизвестно'
   }
-  return new Date(dateStr).toLocaleDateString('en-US', {
+  return new Date(dateStr).toLocaleDateString('ru-RU', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -82,7 +82,7 @@ export const DataSourcePage = withPageWrapper({
   return (
     <div className={css.container}>
       <main className={css.main}>
-        <h1 className={css.pageTitle}>Data Sources & File Management</h1>
+        <h1 className={css.pageTitle}>Источники данных и управление файлами</h1>
         <div className={css.card}>
           <div
             {...getRootProps()}
@@ -94,28 +94,28 @@ export const DataSourcePage = withPageWrapper({
             <input {...getInputProps()} className={css.hiddenInput} />
             <Icon name="uploadCloud" className={css.uploadIcon} size={44} strokeWidth={1.5} />
             <p className={css.uploadText}>
-              {isUploading ? 'Uploading and parsing file...' : 'Drag & drop CSV, Excel, JSON or XML'}
+              {isUploading ? 'Загрузка и обработка файла...' : 'Перетащите CSV, Excel, JSON или XML сюда'}
             </p>
             <button type="button" className={css.uploadBtn} onClick={open} disabled={isUploading}>
-              Upload File
+              Загрузить файл
             </button>
           </div>
           <div className={css.tableResponsive}>
             <table className={css.table}>
               <thead>
                 <tr>
-                  <th className={css.thFilename}>Filename</th>
-                  <th className={css.thUploadDate}>Upload Date</th>
-                  <th className={css.thDimensions}>Dimensions</th>
-                  <th className={css.thMeasures}>Measures</th>
-                  <th className={css.thActions}>Actions</th>
+                  <th className={css.thFilename}>Имя файла</th>
+                  <th className={css.thUploadDate}>Дата загрузки</th>
+                  <th className={css.thDimensions}>Измерения</th>
+                  <th className={css.thMeasures}>Меры</th>
+                  <th className={css.thActions}>Действия</th>
                 </tr>
               </thead>
               <tbody>
                 {files.length === 0 ? (
                   <tr>
                     <td colSpan={5} style={{ textAlign: 'center', padding: '24px' }}>
-                      No files uploaded yet. Upload a CSV, XLSX, JSON or XML file to get started.
+                      Файлы ещё не загружены. Загрузите файл CSV, XLSX, JSON или XML, чтобы начать работу.
                     </td>
                   </tr>
                 ) : (
@@ -151,7 +151,7 @@ export const DataSourcePage = withPageWrapper({
                             onClick={() => deleteMutation.mutate(file.id)}
                           >
                             <Icon name="trash" size={16} />
-                            <span>Delete</span>
+                            <span>Удалить</span>
                           </button>
                         </div>
                       </td>

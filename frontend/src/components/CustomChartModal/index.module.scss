@@ -1,0 +1,253 @@
+@use '../../styles/vars' as *;
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  width: 100%;
+  max-width: 860px;
+  background-color: $surfaceColor;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.15);
+  border: 1px solid $defaultBorderColor;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: $defaultFontFamily;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid $defaultBorderColor;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: $defaultTextColor;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: $subtextColor;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 16px;
+  line-height: 1;
+
+  &:hover {
+    color: $defaultTextColor;
+  }
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: $defaultTextColor;
+}
+
+.input {
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $defaultRadius;
+  font-family: $defaultFontFamily;
+  font-size: 13.5px;
+  color: $defaultTextColor;
+  outline: none;
+
+  &:focus {
+    border-color: $primaryColor;
+  }
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background-color: #f1f5f9;
+  padding: 4px;
+  border-radius: $defaultRadius;
+}
+
+.segmentedTriple {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  background-color: #f1f5f9;
+  padding: 4px;
+  border-radius: $defaultRadius;
+}
+
+.segBtn,
+.segBtnActive {
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+  font-family: $defaultFontFamily;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all $defaultTransition;
+}
+
+.segBtn {
+  background: transparent;
+  color: $subtextColor;
+
+  &:hover {
+    color: $defaultTextColor;
+  }
+}
+
+.segBtnActive {
+  background-color: $surfaceColor;
+  color: $primaryColor;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.layerGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.layerCheck {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid $defaultBorderColor;
+  border-radius: $defaultRadius;
+  font-size: 13px;
+  color: $defaultTextColor;
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    accent-color: $primaryColor;
+    cursor: pointer;
+  }
+}
+
+.rangeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  input[type='range'] {
+    flex: 1;
+    accent-color: $primaryColor;
+  }
+}
+
+.rangeVal {
+  min-width: 38px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: $defaultTextColor;
+  text-align: right;
+}
+
+.previewBox {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $defaultBorderColor;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  padding: 12px;
+  min-height: 360px;
+}
+
+.previewTitle {
+  font-size: 12px;
+  font-weight: 500;
+  color: $subtextColor;
+  margin-bottom: 8px;
+}
+
+.previewChart {
+  flex: 1;
+  min-height: 310px;
+  background-color: $surfaceColor;
+  border-radius: 8px;
+  border: 1px solid $defaultBorderColor;
+  padding: 8px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px;
+  border-top: 1px solid $defaultBorderColor;
+  background-color: #f8fafc;
+}
+
+.cancelBtn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: $defaultRadius;
+  border: 1px solid $defaultBorderColor;
+  background-color: $surfaceColor;
+  color: $defaultTextColor;
+  font-family: $defaultFontFamily;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.submitBtn {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: $defaultRadius;
+  border: none;
+  background-color: $primaryColor;
+  color: #ffffff;
+  font-family: $defaultFontFamily;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
