@@ -34,4 +34,5 @@ def update_chart_type(chart_type_id: int, chart_type: CustomChartTypeUpdateReque
 @router.delete("/{chart_type_id}", response_model=CustomChartTypeDeleteResponse)
 def delete_chart_type(chart_type_id: int, user: User = Depends(get_current_user),
                       service: CustomChartTypeService = Depends(get_custom_chart_types_service)):
-    return service.delete_chart_type(user.id, chart_type_id)
+    service.delete_chart_type(chart_type_id, user.id)
+    return {"id": chart_type_id, "message": "Тип графика успешно удален"}
