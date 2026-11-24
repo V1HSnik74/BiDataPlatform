@@ -33,5 +33,15 @@ export type DeleteUserPathParams = operations['delete_user_api_admin__user_id__d
 export type UpdateUserPermissionsPathParams =
   operations['update_user_permissions_api_admin__user_id__patch']['parameters']['path']
 
+// Custom Chart Types
+export type CustomChartTypeRequest = components['schemas']['CustomChartTypeRequest']
+export type CustomChartTypeResponse = components['schemas']['CustomChartTypeResponse']
+export type CustomChartTypeUpdateRequest = components['schemas']['CustomChartTypeUpdateRequest']
+export type CustomChartTypeDeleteResponse = components['schemas']['CustomChartTypeDeleteResponse']
+export type DeleteCustomChartTypePathParams =
+  operations['delete_chart_type_api_custom_charts__chart_type_id__delete']['parameters']['path']
+export type UpdateCustomChartTypePathParams =
+  operations['update_chart_type_api_custom_charts__chart_type_id__patch']['parameters']['path']
+
 // Other
 export type FileType = 'csv' | 'xlsx' | 'json' | 'xml'

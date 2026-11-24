@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { DEFAULT_CHART_CONFIG, type ChartConfig, type CustomChartBlueprint } from '../../api/charts'
+import { DEFAULT_CHART_CONFIG, parseCustomChartBackendId, type ChartConfig } from '../../api/charts'
 import { graphsApi } from '../../api/graphs'
 import type { GraphBase } from '../../api/types'
 import { uploadApi } from '../../api/uploads'
@@ -16,13 +16,8 @@ import { FileLabel } from '../../components/FileLabel'
 import { FormField } from '../../components/FormField'
 import { Icon } from '../../components/Icon'
 import { withPageWrapper } from '../../components/PageWrapper'
-import {
-  BUILTIN_CHART_LIST,
-  buildCustomChartDefinition,
-  ChartRenderer,
-  type ChartDefinition,
-  resolveChartDefinition,
-} from '../../components/charts'
+import { BUILTIN_CHART_LIST, ChartRenderer, resolveChartDefinition } from '../../components/charts'
+import { useCustomCharts } from '../../hooks/useCustomCharts'
 import { ROUTES } from '../../lib/routes'
 import { handleApiError } from '../../utils/errors'
 import styles from './index.module.scss'
@@ -61,16 +56,8 @@ export const ChartBuilder = withPageWrapper({
   const editState = location.state as LocationState
   const editingChartId = editState?.chartId ?? null
   const [config, setConfig] = useState<ChartConfig>(() => editState?.initialConfig ?? DEFAULT_CHART_CONFIG)
-  const [customBlueprints, setCustomBlueprints] = useState<CustomChartBlueprint[]>([])
+  const { customBlueprints, customDefinitions, createCustomChart, deleteCustomChart } = useCustomCharts()
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false)
-
-  const customDefinitions = useMemo(() => {
-    const map: Record<string, ChartDefinition> = {}
-    for (const bp of customBlueprints) {
-      map[bp.id] = buildCustomChartDefinition(bp)
-    }
-    return map
-  }, [customBlueprints])
 
   const activeDefinition = resolveChartDefinition(config.type, customDefinitions)
   const currentFileId = config.fileId ?? userFiles[0]?.id ?? null
@@ -105,6 +92,7 @@ export const ChartBuilder = withPageWrapper({
         y_axis: [config.yAxis],
         aggregation_func: config.aggregation,
         limit: MAX_TOP_N,
+        constraints: null,
       }),
     enabled: Boolean(currentFileId && config.xAxis && config.yAxis),
     staleTime: 1000 * 60 * 10,
@@ -128,6 +116,7 @@ export const ChartBuilder = withPageWrapper({
         y_axis: [config.yAxis],
         aggregation_func: config.aggregation,
         limit: effectiveTopN,
+        constraints: config.constraints,
       }
       return editingChartId ? graphsApi.updateGraph(editingChartId, payload) : graphsApi.createGraph(payload)
     },
@@ -253,7 +242,10 @@ export const ChartBuilder = withPageWrapper({
                       className={styles.customTypeRemoveBtn}
                       title="Удалить тип"
                       onClick={() => {
-                        setCustomBlueprints((prev) => prev.filter((item) => item.id !== bp.id))
+                        const backendId = parseCustomChartBackendId(bp.id)
+                        if (backendId !== null) {
+                          deleteCustomChart(backendId)
+                        }
                         if (config.type === bp.id) {
                           updateConfig('type', 'bar')
                         }
@@ -317,14 +309,9 @@ export const ChartBuilder = withPageWrapper({
       <CustomChartModal
         isOpen={isCustomModalOpen}
         onClose={() => setIsCustomModalOpen(false)}
-        onCreate={(blueprint) => {
-          const created: CustomChartBlueprint = {
-            ...blueprint,
-            id: `custom_${Date.now()}`,
-          }
-          setCustomBlueprints((prev) => [...prev, created])
-          updateConfig('type', created.id)
-          toast.success(`Тип графика «${created.name}» добавлен`)
+        onCreate={async (blueprint) => {
+          const created = await createCustomChart(blueprint)
+          updateConfig('type', String(created.id))
         }}
       />
     </div>

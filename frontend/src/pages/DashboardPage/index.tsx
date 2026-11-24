@@ -6,6 +6,7 @@ import { graphsApi } from '../../api/graphs'
 import type { GraphResponse } from '../../api/types'
 import { DashboardChartCard } from '../../components/DashboardChartCard'
 import { withPageWrapper } from '../../components/PageWrapper'
+import { useCustomCharts } from '../../hooks/useCustomCharts'
 import { ROUTES } from '../../lib/routes'
 import { handleApiError } from '../../utils/errors'
 import css from './index.module.scss'
@@ -24,6 +25,7 @@ export const Dashboard = withPageWrapper({
 })(({ savedCharts }) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { customDefinitions } = useCustomCharts()
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => graphsApi.deleteGraph(id),
@@ -80,7 +82,13 @@ export const Dashboard = withPageWrapper({
         ) : (
           <div className={css.chartsGrid}>
             {savedCharts.map((chart) => (
-              <DashboardChartCard key={chart.id} chart={chart} onEdit={handleEditChart} onDelete={handleDeleteChart} />
+              <DashboardChartCard
+                key={chart.id}
+                chart={chart}
+                customDefinitions={customDefinitions}
+                onEdit={handleEditChart}
+                onDelete={handleDeleteChart}
+              />
             ))}
           </div>
         )}

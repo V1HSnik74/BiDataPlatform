@@ -212,6 +212,42 @@ export type paths = {
     patch: operations['update_user_permissions_api_admin__user_id__patch']
     trace?: never
   }
+  '/api/custom_charts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get All Chart Types User */
+    get: operations['get_all_chart_types_user_api_custom_charts_get']
+    put?: never
+    /** Create Chart Type */
+    post: operations['create_chart_type_api_custom_charts_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/custom_charts/{chart_type_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Chart Type */
+    delete: operations['delete_chart_type_api_custom_charts__chart_type_id__delete']
+    options?: never
+    head?: never
+    /** Update Chart Type */
+    patch: operations['update_chart_type_api_custom_charts__chart_type_id__patch']
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export type components = {
@@ -220,6 +256,48 @@ export type components = {
     Body_upload_file_api_uploads_post: {
       /** File */
       file: string
+    }
+    /** CustomChartTypeDeleteResponse */
+    CustomChartTypeDeleteResponse: {
+      /** Id */
+      id: number
+      /** Message */
+      message: string
+    }
+    /** CustomChartTypeRequest */
+    CustomChartTypeRequest: {
+      /** Name */
+      name: string
+      /** Icon */
+      icon: string
+      /** Blueprint */
+      blueprint: {
+        [key: string]: unknown
+      }
+    }
+    /** CustomChartTypeResponse */
+    CustomChartTypeResponse: {
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+      /** Icon */
+      icon: string
+      /** Blueprint */
+      blueprint: {
+        [key: string]: unknown
+      }
+    }
+    /** CustomChartTypeUpdateRequest */
+    CustomChartTypeUpdateRequest: {
+      /** Name */
+      name?: string | null
+      /** Icon */
+      icon?: string | null
+      /** Blueprint */
+      blueprint?: {
+        [key: string]: unknown
+      } | null
     }
     /** ForgotPasswordRequest */
     ForgotPasswordRequest: {
@@ -245,6 +323,10 @@ export type components = {
       aggregation_func: string | null
       /** Limit */
       limit: number | null
+      /** Constraints */
+      constraints: {
+        [key: string]: unknown
+      } | null
     }
     /** GraphDeleteResponse */
     GraphDeleteResponse: {
@@ -269,6 +351,10 @@ export type components = {
       aggregation_func: string | null
       /** Limit */
       limit: number | null
+      /** Constraints */
+      constraints: {
+        [key: string]: unknown
+      } | null
       /** Id */
       id: number
       /** User Id */
@@ -290,6 +376,10 @@ export type components = {
       aggregation_func?: string | null
       /** Limit */
       limit?: number | null
+      /** Constraints */
+      constraints: {
+        [key: string]: unknown
+      } | null
     }
     /** HTTPValidationError */
     HTTPValidationError: {
@@ -904,6 +994,125 @@ export type operations = {
         }
         content: {
           'application/json': components['schemas']['UsersResponse']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_all_chart_types_user_api_custom_charts_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CustomChartTypeResponse'][]
+        }
+      }
+    }
+  }
+  create_chart_type_api_custom_charts_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CustomChartTypeRequest']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CustomChartTypeResponse']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  delete_chart_type_api_custom_charts__chart_type_id__delete: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        chart_type_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CustomChartTypeDeleteResponse']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_chart_type_api_custom_charts__chart_type_id__patch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        chart_type_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CustomChartTypeUpdateRequest']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CustomChartTypeResponse']
         }
       }
       /** @description Validation Error */

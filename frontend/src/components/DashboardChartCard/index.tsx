@@ -4,11 +4,13 @@ import { mapGraphToConfig } from '../../api/charts'
 import { graphsApi } from '../../api/graphs'
 import type { GraphResponse } from '../../api/types'
 import { Icon } from '../Icon'
+import type { ChartDefinition } from '../charts'
 import { ChartRenderer } from '../charts/ChartRender'
 import css from './index.module.scss'
 
 type CardProps = {
   chart: GraphResponse
+  customDefinitions?: Record<string, ChartDefinition>
   onEdit: (chart: GraphResponse) => void
   onDelete: (id: number) => void
 }
@@ -18,7 +20,7 @@ type BackendPreviewResponse = {
   datasets?: Array<{ label: string; data: number[] }>
 }
 
-export const DashboardChartCard = ({ chart, onEdit, onDelete }: CardProps) => {
+export const DashboardChartCard = ({ chart, customDefinitions, onEdit, onDelete }: CardProps) => {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -44,6 +46,7 @@ export const DashboardChartCard = ({ chart, onEdit, onDelete }: CardProps) => {
         y_axis: [config.yAxis],
         aggregation_func: config.aggregation,
         limit: config.topN,
+        constraints: null,
       }),
     enabled: Boolean(config.fileId && config.xAxis && config.yAxis),
     staleTime: 1000 * 60 * 10,
@@ -96,7 +99,7 @@ export const DashboardChartCard = ({ chart, onEdit, onDelete }: CardProps) => {
         </div>
       </div>
       <div className={css.cardBody}>
-        <ChartRenderer data={chartData} config={config} isLoading={isLoading} />
+        <ChartRenderer data={chartData} config={config} isLoading={isLoading} customDefinitions={customDefinitions} />
       </div>
     </article>
   )
